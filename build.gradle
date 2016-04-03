@@ -1,0 +1,33 @@
+apply plugin: 'idea'
+apply plugin: 'java'
+
+buildscript {
+    ext.kotlin_version = '1.0.1-2'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'application'
+mainClassName = "theplace.MainKt"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "com.mashape.unirest:unirest-java:1.4.7"
+    compile "org.jsoup:jsoup:1.8.3"
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+}
+
+
+
+
+defaultTasks 'run'
