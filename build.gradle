@@ -27,7 +27,12 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'theplace.MainKt'
+    }
 
-
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
 
 defaultTasks 'run'
