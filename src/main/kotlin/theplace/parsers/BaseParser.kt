@@ -20,7 +20,7 @@ open abstract class BaseParser(var url: String = "", var title: String = "") {
         _galleries = getGalleries_internal()
     }
 
-    fun getGalleryById(id: Int): Gallery? = galleries?.find { it.id == id }
+    fun getGalleryById(id: Int): Gallery? = galleries.find { it.id == id }
 
     abstract fun getGalleries_internal(): List<Gallery>
     abstract fun getAlbums(gallery: Gallery): List<GalleryAlbum>

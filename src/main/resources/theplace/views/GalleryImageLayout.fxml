@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.*?>
+<?import javafx.scene.image.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox alignment="CENTER">
+         <children>
+            <ImageView fx:id="image" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../images/loading.gif" />
+               </image>
+            </ImageView>
+            <HBox>
+               <children>
+                  <CheckBox fx:id="chkExists" disable="true" mnemonicParsing="false" />
+                  <Region HBox.hgrow="ALWAYS" />
+                  <Button fx:id="btnDownload" mnemonicParsing="false" text="download" />
+               </children>
+               <padding>
+                  <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+               </padding>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="8.0" left="8.0" />
+         </padding>
+      </VBox>
+   </children>
+</AnchorPane>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.media.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox spacing="8.0">
+         <children>
+            <TextField fx:id="queryText" />
+            <Button mnemonicParsing="false" text="Button" />
+            <Region HBox.hgrow="ALWAYS" />
+         </children>
+         <padding>
+            <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+         </padding>
+      </HBox>
+      <SplitPane dividerPositions="0.26948775055679286" prefHeight="434.0" prefWidth="679.0" VBox.vgrow="ALWAYS">
+         <items>
+            <ListView fx:id="galleriesList" prefHeight="200.0" prefWidth="200.0" />
+            <AnchorPane>
+               <children>
+                  <TabPane fx:id="tabPane" prefHeight="213.0" prefWidth="241.0" tabClosingPolicy="ALL_TABS" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+         </items>
+      </SplitPane>
+   </children>
+</VBox>

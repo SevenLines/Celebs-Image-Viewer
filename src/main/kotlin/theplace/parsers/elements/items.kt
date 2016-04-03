@@ -1,11 +1,11 @@
 package theplace.parsers.elements
 
+import org.apache.commons.io.FileUtils
+import org.apache.commons.io.FilenameUtils
 import theplace.parsers.BaseParser
+import java.io.File
 import java.io.InputStream
-import java.nio.file.CopyOption
-import java.nio.file.FileSystems
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
+import java.nio.file.*
 
 /**
  * Created by mk on 03.04.16.
@@ -29,18 +29,19 @@ class Gallery(val title: String = "",
     }
 
     override fun toString(): String {
-        return "Gallery: $title ($id) [url: $url]"
+        return "$title"
     }
 }
 
 
 class GalleryAlbum(var url: String = "",
+                   var title: String = "",
                    var gallery: Gallery? = null) {
     override fun toString(): String {
         return "GalleryAlbum: ${gallery?.title} [url: $url]"
     }
 
-    protected  var _images: List<GalleryImage>? = null
+    protected var _images: List<GalleryImage>? = null
     val images: List<GalleryImage>
         get() {
             _images = if (_images == null) gallery?.parser?.getImages(this) else _images
@@ -48,11 +49,18 @@ class GalleryAlbum(var url: String = "",
         }
 }
 
-class GalleryImage(val title: String = "",
+class GalleryImage(var title: String = "",
                    val url: String,
                    val url_thumb: String,
-                   var album: GalleryAlbum? = null)
-{
+                   var album: GalleryAlbum? = null) {
+    init {
+        title = FilenameUtils.getName(url)
+    }
+
+    fun get_path(directory_path: String, filename: String=title) =
+            Paths.get(directory_path, album?.title ?: "", album?.gallery?.title ?: "", filename).toString()
+    fun exists(directory_path: String): Boolean = Files.exists(Paths.get(get_path(directory_path)))
+
     fun download(): InputStream? {
         return album?.gallery?.parser?.downloadImage(url)
     }
@@ -61,15 +69,22 @@ class GalleryImage(val title: String = "",
         return album?.gallery?.parser?.downloadImage(url_thumb)
     }
 
-    fun save_to_file(path: String) {
+    protected fun save_to_path(url: String? = null, directory_path: String) {
+        var filename = if (url != null) Paths.get(url).fileName.toString() else title
+        var pth = get_path(directory_path, filename)
         var data = download()
-        if (data != null)
-            Files.copy(data, FileSystems.getDefault().getPath(path), StandardCopyOption.REPLACE_EXISTING)
+        if (data != null) {
+            var file = File(pth);
+            file.parentFile.mkdirs();
+            FileUtils.copyInputStreamToFile(data, file)
+        }
     }
 
-    fun save_thumb_to_file(path: String) {
-        var data = download_thumb()
-        if (data != null)
-            Files.copy(data, FileSystems.getDefault().getPath(path), StandardCopyOption.REPLACE_EXISTING)
+    fun save_to_file(directory_path: String) {
+        save_to_path(directory_path = directory_path)
+    }
+
+    fun save_thumb_to_file(directory_path: String) {
+        save_to_path(url_thumb, directory_path)
     }
 }
