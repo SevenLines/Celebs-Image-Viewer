@@ -2,11 +2,13 @@ package theplace.parsers
 
 import theplace.parsers.elements.Gallery
 import theplace.parsers.elements.GalleryAlbum
+import theplace.parsers.elements.GalleryImage
+import java.io.InputStream
 
 /**
  * Created by mk on 03.04.16.
  */
-open class BaseParser(var url: String = "", var title: String = "") {
+open abstract class BaseParser(var url: String = "", var title: String = "") {
     protected var _galleries: List<Gallery>? = null
     val galleries: List<Gallery>
         get() {
@@ -18,15 +20,10 @@ open class BaseParser(var url: String = "", var title: String = "") {
         _galleries = getGalleries_internal()
     }
 
-    open fun getGalleries_internal(): List<Gallery> {
-        throw UnsupportedOperationException("not implemented")
-    }
+    fun getGalleryById(id: Int): Gallery? = galleries?.find { it.id == id }
 
-    fun getGalleryById(id: Int): Gallery? {
-        return _galleries?.find { it.id == id }
-    }
-
-    open fun getAlbums(gallery: Gallery): List<GalleryAlbum> {
-        throw UnsupportedOperationException("not implemented")
-    }
+    abstract fun getGalleries_internal(): List<Gallery>
+    abstract fun getAlbums(gallery: Gallery): List<GalleryAlbum>
+    abstract fun getImages(album: GalleryAlbum): List<GalleryImage>
+    abstract fun downloadImage(image_url: String): InputStream?
 }
