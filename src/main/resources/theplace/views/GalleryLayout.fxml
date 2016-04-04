@@ -8,6 +8,11 @@
 
 <VBox VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Pagination fx:id="paginator" style="-fx-padding: 10;" VBox.vgrow="ALWAYS" />
+      <Pagination fx:id="paginator" VBox.vgrow="ALWAYS" />
+      <Slider fx:id="sldPage" majorTickUnit="1.0" minorTickCount="0" showTickMarks="true" snapToTicks="true">
+         <padding>
+            <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+         </padding>
+      </Slider>
    </children>
 </VBox>

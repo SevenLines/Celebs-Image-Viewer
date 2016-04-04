@@ -8,20 +8,6 @@
     -fx-border-width: 3px;
 }
 
-#btnDownload {
-    -fx-background-color: #ccef7d;
-    -fx-border-radius: 0;
-    -fx-content-display: center;
-}
-
-#btnDownload:hover {
-    -fx-background-color: #70c900;
-}
-
-#btnDownload.exists {
-    -fx-background-color: #ee7baa;
-}
-
-#btnDownload.exists:hover {
-    -fx-background-color: #e42267;
+#imageWrapper.exists:hover {
+    -fx-border-color: red;
 }

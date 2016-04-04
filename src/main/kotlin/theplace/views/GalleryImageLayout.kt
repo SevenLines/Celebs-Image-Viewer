@@ -8,6 +8,7 @@ import javafx.scene.control.Button
 import javafx.scene.control.CheckBox
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
+import javafx.scene.input.MouseButton
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.Border
 import javafx.scene.layout.BorderPane
@@ -83,19 +84,21 @@ class GalleryImageLayout(val img: GalleryImage) : Fragment() {
         }
 
         root.onMouseClicked = EventHandler {
-            overlayPane.center = iconLoading
-            overlayPane.isVisible = true
-            isLoading = true
-            background {
-                if (img.exists(dir_path)) {
-                    Files.delete(Paths.get(img.get_path(dir_path)))
-                } else {
-                    img.save_to_file(dir_path)
+            if (it.button == MouseButton.PRIMARY) {
+                overlayPane.center = iconLoading
+                overlayPane.isVisible = true
+                isLoading = true
+                background {
+                    if (img.exists(dir_path)) {
+                        Files.delete(Paths.get(img.get_path(dir_path)))
+                    } else {
+                        img.save_to_file(dir_path)
+                    }
+                } ui {
+                    overlayPane.isVisible = false
+                    isLoading = false
+                    update_interface()
                 }
-            } ui {
-                overlayPane.isVisible = false
-                isLoading = false
-                update_interface()
             }
         }
     }
