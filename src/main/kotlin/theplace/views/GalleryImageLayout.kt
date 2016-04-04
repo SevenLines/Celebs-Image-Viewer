@@ -32,25 +32,19 @@ class GalleryImageLayout(val img: GalleryImage) : Fragment() {
     val overlayPane: BorderPane by fxid()
 
     var img_data: InputStream? = null
-    var iconDownload: ImageView = ImageView(resources["../../images/download.png"])
-    var iconRemove: ImageView = ImageView(resources["../../images/Trash.png"])
-    var iconLoading: ImageView = ImageView(resources["../../images/loading.gif"])
+    var iconDownload: ImageView = ImageView(Image(javaClass.getResourceAsStream("images/download.png")))
+    var iconRemove: ImageView = ImageView(Image(javaClass.getResourceAsStream("images/Trash.png")))
+    var iconLoading: ImageView = ImageView(Image(javaClass.getResourceAsStream("images/loading.gif")))
     var isLoading = false
 
     var dir_path: String = "./downloads/"
 
     fun update_interface() {
         var exists = img.exists(dir_path)
-        //        btnDownload.text = if (exists) "" else ""
-        //        btnDownload.graphic = if (exists) iconRemove else iconDownload
-        //        btnDownload.isDisable = false
-
         if (exists) {
             root.styleClass.add("exists")
-            //            btnDownload.styleClass.add("exists")
         } else {
             root.styleClass.remove("exists")
-            //            btnDownload.styleClass.remove("exists")
         }
     }
 

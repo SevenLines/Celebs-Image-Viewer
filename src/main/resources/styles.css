@@ -6,6 +6,7 @@
 #imageWrapper.exists {
     -fx-border-color: #70c900;
     -fx-border-width: 3px;
+    -fx-background-color: #edffdf;
 }
 
 #imageWrapper.exists:hover {

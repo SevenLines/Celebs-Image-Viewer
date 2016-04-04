@@ -15,6 +15,7 @@ import theplace.parsers.elements.Gallery
 import tornadofx.View
 import tornadofx.asyncItems
 import tornadofx.selectedItem
+import java.util.prefs.Preferences
 
 /**
  * Created by mk on 03.04.16.
@@ -28,6 +29,10 @@ class MainLayout : View() {
 
     var galleries: FilteredList<Gallery>? = null
     var tabMap: MutableMap<Gallery, Tab> = mutableMapOf()
+
+    fun updatePreferences(preferences: Preferences) {
+
+    }
 
     init {
         background {

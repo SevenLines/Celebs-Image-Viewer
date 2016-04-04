@@ -16,7 +16,7 @@
                <children>
                   <ImageView fx:id="image" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../images/loading.gif" />
+                        <Image url="@images/loading.gif" />
                      </image>
                   </ImageView>
                   <BorderPane fx:id="overlayPane" style="-fx-background-color: rgba(255,255,255,0.5);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
