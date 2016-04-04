@@ -58,7 +58,11 @@ class GalleryImage(var title: String = "",
     }
 
     fun get_path(directory_path: String, filename: String=title) =
-            Paths.get(directory_path, album?.title ?: "", album?.gallery?.title ?: "", filename).toString()
+            Paths.get(directory_path,
+                    album?.title ?: "",
+                    album?.gallery?.title ?: "",
+                    album?.gallery?.parser?.title ?: "",
+                    filename).toString()
     fun exists(directory_path: String): Boolean = Files.exists(Paths.get(get_path(directory_path)))
 
     fun download(): InputStream? {

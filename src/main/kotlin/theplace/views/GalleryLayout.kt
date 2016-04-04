@@ -1,11 +1,9 @@
 package theplace.views
 
-import javafx.beans.value.ChangeListener
 import javafx.event.EventHandler
-import javafx.scene.control.*
+import javafx.scene.control.Pagination
+import javafx.scene.control.Slider
 import javafx.scene.layout.AnchorPane
-import javafx.scene.layout.VBox
-import javafx.scene.shape.Rectangle
 import javafx.util.Callback
 import theplace.parsers.elements.Gallery
 import tornadofx.Fragment
@@ -41,12 +39,10 @@ class GalleryLayout(gallery: Gallery) : Fragment() {
         }
 
         root.onScroll = EventHandler {
-            if (it.isControlDown) {
-                if (it.deltaY < 0) {
-                    paginator.currentPageIndex++;
-                } else {
-                    paginator.currentPageIndex--;
-                }
+            if (it.deltaY < 0) {
+                paginator.currentPageIndex++;
+            } else {
+                paginator.currentPageIndex--;
             }
         }
 

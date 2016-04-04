@@ -1,7 +1,6 @@
 package theplace
 
 import javafx.stage.Stage
-import theplace.parsers.ThePlaceParser
 import theplace.views.MainLayout
 import tornadofx.App
 import tornadofx.FX

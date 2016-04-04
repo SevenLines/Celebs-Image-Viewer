@@ -1,20 +1,15 @@
 package theplace.views
 
-import javafx.beans.value.ChangeListener
-import javafx.collections.FXCollections
 import javafx.collections.FXCollections.observableList
 import javafx.collections.transformation.FilteredList
 import javafx.event.EventHandler
-import javafx.scene.control.ListView
-import javafx.scene.control.Tab
-import javafx.scene.control.TabPane
-import javafx.scene.control.TextField
-import javafx.scene.layout.*
+import javafx.scene.control.*
+import javafx.scene.layout.VBox
+import javafx.stage.DirectoryChooser
 import theplace.controllers.MainLayoutController
 import theplace.parsers.elements.Gallery
 import tornadofx.View
-import tornadofx.asyncItems
-import tornadofx.selectedItem
+import java.io.File
 import java.util.prefs.Preferences
 
 /**
@@ -22,33 +17,48 @@ import java.util.prefs.Preferences
  */
 class MainLayout : View() {
     override val root: VBox by fxml()
-    val queryText: TextField by fxid()
+    val txtQuery: TextField by fxid()
     val galleriesList: ListView<Gallery> by fxid()
     val tabPane: TabPane by fxid()
     val controller: MainLayoutController by inject()
+    val btnSavePathSelector: Button by fxid()
+    val txtSavePath: TextField by fxid()
 
     var galleries: FilteredList<Gallery>? = null
     var tabMap: MutableMap<Gallery, Tab> = mutableMapOf()
 
-    fun updatePreferences(preferences: Preferences) {
-
-    }
-
     init {
+        txtSavePath.text = Preferences.userRoot().get("savepath", ".")
+        txtQuery.text = Preferences.userRoot().get("query", "")
+
         background {
-            galleries = FilteredList(observableList(controller.listGalleries()))
+            galleries = FilteredList(observableList(controller.listGalleries()), {
+                it.title.contains(txtQuery.text, true)
+            })
         } ui {
             galleriesList.items = galleries
         }
 
-        queryText.textProperty().addListener(ChangeListener {
+        txtQuery.textProperty().addListener({
             value, old, new ->
             run {
                 galleries?.setPredicate { it.title.contains(new, true) }
+                Preferences.userRoot().put("query", new)
             }
         })
 
-        galleriesList.getSelectionModel().selectedItemProperty().addListener(ChangeListener {
+        btnSavePathSelector.onAction = EventHandler {
+            var chooser = DirectoryChooser()
+            chooser.initialDirectory = File(if (!txtSavePath.text.isNullOrEmpty()) txtSavePath.text else ".")
+            var file = chooser.showDialog(primaryStage)
+
+            if (file != null) {
+                txtSavePath.text = file.absolutePath
+                Preferences.userRoot().put("savepath", file.absolutePath)
+            }
+        }
+
+        galleriesList.getSelectionModel().selectedItemProperty().addListener({
             observableValue, old, newGallery ->
             run {
                 if (newGallery != null) {
@@ -70,4 +80,6 @@ class MainLayout : View() {
             }
         })
     }
+
+
 }

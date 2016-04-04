@@ -1,25 +1,18 @@
 package theplace.views
 
-import javafx.beans.value.ChangeListener
 import javafx.event.EventHandler
-import javafx.event.EventType
-import javafx.scene.Parent
-import javafx.scene.control.Button
-import javafx.scene.control.CheckBox
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.input.MouseButton
+import javafx.scene.input.MouseEvent
 import javafx.scene.layout.AnchorPane
-import javafx.scene.layout.Border
 import javafx.scene.layout.BorderPane
-import javafx.scene.layout.Pane
 import theplace.parsers.elements.GalleryImage
 import tornadofx.Fragment
-import tornadofx.add
-import javafx.scene.input.MouseEvent
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.util.prefs.Preferences
 
 /**
  * Created by mk on 03.04.16.
@@ -27,8 +20,6 @@ import java.nio.file.Paths
 class GalleryImageLayout(val img: GalleryImage) : Fragment() {
     override val root: AnchorPane by fxml()
     val image: ImageView by fxid()
-    //    val btnDownload: Button by fxid()
-    val imageContainer: AnchorPane by fxid()
     val overlayPane: BorderPane by fxid()
 
     var img_data: InputStream? = null
@@ -37,16 +28,16 @@ class GalleryImageLayout(val img: GalleryImage) : Fragment() {
     var iconLoading: ImageView = ImageView(Image(javaClass.getResourceAsStream("images/loading.gif")))
     var isLoading = false
 
-    var dir_path: String = "./downloads/"
-
     fun update_interface() {
-        var exists = img.exists(dir_path)
+        var exists = img.exists(savePath())
         if (exists) {
             root.styleClass.add("exists")
         } else {
             root.styleClass.remove("exists")
         }
     }
+
+    fun savePath() = Preferences.userRoot().get("savepath", ".")
 
     init {
         update_interface()
@@ -64,7 +55,7 @@ class GalleryImageLayout(val img: GalleryImage) : Fragment() {
                 return@EventHandler
             }
             overlayPane.isVisible = true
-            var exists = img.exists(dir_path)
+            var exists = img.exists(savePath())
             overlayPane.center = if (exists) iconRemove else iconDownload
         })
 
@@ -78,6 +69,7 @@ class GalleryImageLayout(val img: GalleryImage) : Fragment() {
         }
 
         root.onMouseClicked = EventHandler {
+            var dir_path = savePath()
             if (it.button == MouseButton.PRIMARY) {
                 overlayPane.center = iconLoading
                 overlayPane.isVisible = true
