@@ -11,3 +11,11 @@
 #imageWrapper.exists:hover {
     -fx-border-color: red;
 }
+
+.pagination {
+    -fx-page-information-visible: false;
+}
+
+.pagination .pagination-control {
+    -fx-padding: 20px 0 0 0;
+}

@@ -1,6 +1,7 @@
 package theplace.views
 
 import javafx.beans.value.ChangeListener
+import javafx.event.EventHandler
 import javafx.scene.control.*
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.VBox
@@ -13,36 +14,41 @@ import tornadofx.Fragment
  * Created by mk on 03.04.16.
  */
 class GalleryLayout(gallery: Gallery) : Fragment() {
-    override val root: VBox by fxml()
-    val lblTitle: Label by fxid()
+    override val root: AnchorPane by fxml()
     val paginator: Pagination by fxid()
-//    val txtCurrentPage: TextField by fxid()
     val sldPage: Slider by fxid()
-    val contextMenu: ContextMenu = ContextMenu()
 
     init {
-        paginator.contextMenu = contextMenu
-
         sldPage.valueChangingProperty().addListener({ observableValue, t, isNowChanging ->
-            if (! isNowChanging) {
-                paginator.currentPageIndex = sldPage.value.toInt()
+            if (!isNowChanging) {
+                paginator.currentPageIndex = sldPage.value.toInt() - 1
             }
         })
 
-        paginator.pageFactory = Callback { i ->  run {
-            var layout = GalleryAlbumLayout(gallery.albums[i]).root
-            var anchor = AnchorPane()
-            AnchorPane.setLeftAnchor(layout, 10.0)
-            AnchorPane.setRightAnchor(layout, 10.0)
-            AnchorPane.setTopAnchor(layout, 10.0)
-            AnchorPane.setBottomAnchor(layout, 10.0)
-            anchor.children.add(layout)
+        paginator.pageFactory = Callback { i ->
+            run {
+                var layout = GalleryAlbumLayout(gallery.albums[i]).root
+                var anchor = AnchorPane()
+                AnchorPane.setLeftAnchor(layout, 10.0)
+                AnchorPane.setRightAnchor(layout, 10.0)
+                AnchorPane.setTopAnchor(layout, 10.0)
+                AnchorPane.setBottomAnchor(layout, 10.0)
+                anchor.children.add(layout)
 
-//            txtCurrentPage.text = i.toString()
-            sldPage.value = i.toDouble()
+                sldPage.value = i.toDouble() + 1
+                return@run anchor
+            }
+        }
 
-            return@run anchor
-        } }
+        root.onScroll = EventHandler {
+            if (it.isControlDown) {
+                if (it.deltaY < 0) {
+                    paginator.currentPageIndex++;
+                } else {
+                    paginator.currentPageIndex--;
+                }
+            }
+        }
 
         background {
             gallery.albums
@@ -50,9 +56,6 @@ class GalleryLayout(gallery: Gallery) : Fragment() {
             paginator.pageCount = gallery.albums.size
             sldPage.min = 1.toDouble()
             sldPage.max = gallery.albums.size.toDouble()
-            IntRange(1, gallery.albums.size).forEach {
-                contextMenu.items.add(MenuItem(it.toString()))
-            }
         }
 
     }
