@@ -41,14 +41,11 @@ class GalleryImageLayout(val img: GalleryImage) : Fragment() {
     var onImageClick: EventHandler<MouseEvent>? = null
 
     companion object {
-        @JvmField
-        val CURRENT_IMAGE = SimpleObjectProperty<Fragment>()
-        @JvmField
-        val imageDownload = Image(GalleryImageLayout::class.java.getResourceAsStream("images/download.png"))
-        @JvmField
-        val imageRemove = Image(GalleryImageLayout::class.java.getResourceAsStream("images/Trash.png"))
-        @JvmField
-        val imageLoading = Image(GalleryImageLayout::class.java.getResourceAsStream("images/loading.gif"))
+        @JvmStatic val CURRENT_IMAGE = SimpleObjectProperty<Fragment>()
+        @JvmStatic val imageDownload = Image(GalleryImageLayout::class.java.getResourceAsStream("images/download.png"))
+        @JvmStatic val imageRemove = Image(GalleryImageLayout::class.java.getResourceAsStream("images/Trash.png"))
+        @JvmStatic val imageLoading = Image(GalleryImageLayout::class.java.getResourceAsStream("images/loading.gif"))
+        @JvmStatic val CACHE_DIR = "./"
     }
 
     fun update_interface(force: Boolean = false, check_exists: Boolean = false) {

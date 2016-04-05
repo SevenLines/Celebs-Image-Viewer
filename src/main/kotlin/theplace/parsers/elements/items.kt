@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils
 import org.apache.commons.io.FilenameUtils
 import theplace.parsers.BaseParser
 import java.io.File
+import java.io.FileInputStream
 import java.io.InputStream
 import java.nio.file.*
 
@@ -53,6 +54,11 @@ class GalleryImage(var title: String = "",
                    val url: String,
                    val url_thumb: String,
                    var album: GalleryAlbum? = null) {
+
+    companion object {
+        @JvmStatic val CACHE_DIR: String = "./cache"
+    }
+
     init {
         title = FilenameUtils.getName(url)
     }
@@ -63,15 +69,25 @@ class GalleryImage(var title: String = "",
                     album?.gallery?.title ?: "",
                     album?.gallery?.parser?.title ?: "",
                     filename).toString()
+
+
+    fun downloadImage(url: String): InputStream? {
+        var file_name = Paths.get(url).fileName.toString()
+        var path = get_path(CACHE_DIR, file_name)
+        var stream_data: InputStream? = null
+        if (Files.exists(Paths.get(path))) {
+            return FileInputStream(path)
+        } else {
+            stream_data = album?.gallery?.parser?.downloadImage(url)
+            FileUtils.copyInputStreamToFile(stream_data, File(path))
+            stream_data?.reset()
+            return stream_data
+        }
+    }
+
     fun exists(directory_path: String): Boolean = Files.exists(Paths.get(get_path(directory_path)))
-
-    fun download(): InputStream? {
-        return album?.gallery?.parser?.downloadImage(url)
-    }
-
-    fun download_thumb(): InputStream? {
-        return album?.gallery?.parser?.downloadImage(url_thumb)
-    }
+    fun download(): InputStream? = downloadImage(url)
+    fun download_thumb(): InputStream? = downloadImage(url_thumb)
 
     protected fun save_to_path(url: String? = null, directory_path: String) {
         var filename = if (url != null) Paths.get(url).fileName.toString() else title
