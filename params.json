@@ -1,0 +1,6 @@
+{
+  "name": "Celebs-image-viewer",
+  "tagline": "",
+  "body": "This is application that allows one to create it very own collection of celebs photos.\r\nFor now the only site supported: ThePlace.ru as the one of the best repository of HQ content.\r\n\r\nBuild\r\n-----\r\n\r\n    gradle build",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
