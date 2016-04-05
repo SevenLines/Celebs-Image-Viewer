@@ -5,3 +5,5 @@ Build
 -----
 
     gradle build
+    
+![preview](https://github.com/SevenLines/Celebs-Image-Viewer/blob/gh-pages/images/preview.png)
