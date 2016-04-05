@@ -10,3 +10,10 @@ Preview
 -----
 
 ![preview](https://github.com/SevenLines/Celebs-Image-Viewer/blob/gh-pages/images/preview.png)
+
+
+Hotkeys
+-------
+
+Ctrl + MouseWheel -- list pages
+Left Click on Image -- open HQ preview (Right clicked it to hide)

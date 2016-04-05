@@ -39,10 +39,12 @@ class GalleryLayout(gallery: Gallery) : Fragment() {
         }
 
         root.onScroll = EventHandler {
-            if (it.deltaY < 0) {
-                paginator.currentPageIndex++;
-            } else {
-                paginator.currentPageIndex--;
+            if (it.isControlDown) {
+                if (it.deltaY < 0) {
+                    paginator.currentPageIndex++;
+                } else {
+                    paginator.currentPageIndex--;
+                }
             }
         }
 

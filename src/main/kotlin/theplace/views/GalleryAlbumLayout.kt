@@ -13,6 +13,7 @@ import theplace.parsers.elements.GalleryAlbum
 import tornadofx.Fragment
 import tornadofx.View
 import tornadofx.add
+import java.io.Console
 import java.io.InputStream
 
 /**
@@ -56,20 +57,22 @@ class GalleryAlbumLayout(album: GalleryAlbum) : Fragment() {
             flowPanel.children.addAll(album.images.map {
                 var gall = GalleryImageLayout(it)
                 gall.onImageClick = EventHandler {
-                    imageContainer.image = imageLoading
-                    imageWrapContainer.isVisible = true
-                    var image_data: InputStream? = null
-                    setFit(true)
+                    if (it.button == MouseButton.PRIMARY) {
+                        imageContainer.image = imageLoading
+                        imageWrapContainer.isVisible = true
+                        var image_data: InputStream? = null
+                        setFit(true)
 
-                    background {
-                        image_data = gall.img.download()
-                    } ui {
-                        if (image_data != null) {
-                            setFit(false)
-                            if (image_data?.markSupported() ?: false) {
-                                image_data?.reset()
+                        background {
+                            image_data = gall.img.download()
+                        } ui {
+                            if (image_data != null) {
+                                setFit(false)
+                                if (image_data?.markSupported() ?: false) {
+                                    image_data?.reset()
+                                }
+                                imageContainer.image = Image(image_data)
                             }
-                            imageContainer.image = Image(image_data)
                         }
                     }
                 }

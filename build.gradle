@@ -47,8 +47,4 @@ def getVersionName = { ->
     return stdout.toString().trim()
 }
 
-defaultConfig {
-    versionName getVersionName()
-}
-
 defaultTasks 'run'
