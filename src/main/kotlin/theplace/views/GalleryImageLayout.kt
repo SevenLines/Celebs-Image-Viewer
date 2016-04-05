@@ -33,11 +33,23 @@ class GalleryImageLayout(val img: GalleryImage) : Fragment() {
     val imageContainer: AnchorPane by fxid()
 
     var img_data: InputStream? = null
-    var iconDownload: ImageView = ImageView(Image(javaClass.getResourceAsStream("images/download.png")))
-    var iconRemove: ImageView = ImageView(Image(javaClass.getResourceAsStream("images/Trash.png")))
-    var iconLoading: ImageView = ImageView(Image(javaClass.getResourceAsStream("images/loading.gif")))
+    var iconDownload: ImageView = ImageView(imageDownload)
+    var iconRemove: ImageView = ImageView(imageRemove)
+    var iconLoading: ImageView = ImageView(imageLoading)
     var isDownloading = false
     var opTransition = TranslateTransition(Duration(300.0), overlayPane)
+    var onImageClick: EventHandler<MouseEvent>? = null
+
+    companion object {
+        @JvmField
+        val CURRENT_IMAGE = SimpleObjectProperty<Fragment>()
+        @JvmField
+        val imageDownload = Image(GalleryImageLayout::class.java.getResourceAsStream("images/download.png"))
+        @JvmField
+        val imageRemove = Image(GalleryImageLayout::class.java.getResourceAsStream("images/Trash.png"))
+        @JvmField
+        val imageLoading = Image(GalleryImageLayout::class.java.getResourceAsStream("images/loading.gif"))
+    }
 
     fun update_interface(force: Boolean = false, check_exists: Boolean = false) {
         if (check_exists) {
@@ -62,11 +74,6 @@ class GalleryImageLayout(val img: GalleryImage) : Fragment() {
         }
     }
 
-    companion object {
-        @JvmField
-        val CURRENT_IMAGE = SimpleObjectProperty<Fragment>()
-    }
-
     fun savePath() = Preferences.userRoot().get("savepath", ".")
 
     init {
@@ -78,7 +85,7 @@ class GalleryImageLayout(val img: GalleryImage) : Fragment() {
         overlayPane.center = iconLoading
         opTransition.interpolator = Interpolator.EASE_OUT
         opTransition.fromYProperty().bind(root.heightProperty())
-        opTransition.toYProperty().bind(root.heightProperty().subtract(overlayPane.heightProperty()))
+        opTransition.toYProperty().bind(root.heightProperty().subtract(overlayPane.heightProperty()).subtract(3))
 
         background {
             img_data = img.download_thumb()
@@ -117,6 +124,7 @@ class GalleryImageLayout(val img: GalleryImage) : Fragment() {
                 }
             }
         }
+        image.onMouseClicked = EventHandler { onImageClick?.handle(it) }
         update_interface(true, true)
     }
 }
