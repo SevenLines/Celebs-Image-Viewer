@@ -17,12 +17,13 @@ import java.util.prefs.Preferences
  */
 class MainLayout : View() {
     override val root: VBox by fxml()
-    val txtQuery: TextField by fxid()
     val galleriesList: ListView<Gallery> by fxid()
+
+    val btnSavePathSelector: Button by fxid()
+    val txtQuery: TextField by fxid()
+    val txtSavePath: TextField by fxid()
     val tabPane: TabPane by fxid()
     val controller: MainLayoutController by inject()
-    val btnSavePathSelector: Button by fxid()
-    val txtSavePath: TextField by fxid()
 
     var galleries: FilteredList<Gallery>? = null
     var tabMap: MutableMap<Gallery, Tab> = mutableMapOf()
