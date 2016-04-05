@@ -66,6 +66,9 @@ class GalleryAlbumLayout(album: GalleryAlbum) : Fragment() {
                     } ui {
                         if (image_data != null) {
                             setFit(false)
+                            if (image_data?.markSupported() ?: false) {
+                                image_data?.reset()
+                            }
                             imageContainer.image = Image(image_data)
                         }
                     }
