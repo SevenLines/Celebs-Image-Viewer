@@ -32,6 +32,7 @@ dependencies {
 jar {
     manifest {
         attributes 'Main-Class': 'theplace.ThePlaceApplication'
+        attributes 'Application-Name': 'Celebs-Image-Viewer'
     }
 
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
