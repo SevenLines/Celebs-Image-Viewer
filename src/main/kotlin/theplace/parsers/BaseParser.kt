@@ -56,4 +56,8 @@ abstract class BaseParser(var url: String = "", var title: String = "") {
     abstract fun getAlbums(gallery: Gallery): List<GalleryAlbum>
     abstract fun getImages(album: GalleryAlbum): List<GalleryImage>
     abstract fun downloadImage(image_url: String): InputStream?
+
+    override fun toString(): String {
+        return title
+    }
 }

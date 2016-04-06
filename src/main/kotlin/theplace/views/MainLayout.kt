@@ -7,6 +7,8 @@ import javafx.scene.control.*
 import javafx.scene.layout.VBox
 import javafx.stage.DirectoryChooser
 import theplace.controllers.MainLayoutController
+import theplace.parsers.BaseParser
+import theplace.parsers.ThePlaceParser
 import theplace.parsers.elements.Gallery
 import tornadofx.View
 import java.io.File
@@ -19,6 +21,7 @@ class MainLayout : View() {
     override val root: VBox by fxml()
     val galleriesList: ListView<Gallery> by fxid()
 
+    val cmbParsers: ComboBox<BaseParser> by fxid()
     val btnSavePathSelector: Button by fxid()
     val btnRefresh: Button by fxid()
     val txtQuery: TextField by fxid()
@@ -30,16 +33,16 @@ class MainLayout : View() {
     var tabMap: MutableMap<Gallery, Tab> = mutableMapOf()
 
     init {
-        txtSavePath.text = Preferences.userRoot().get("savepath", ".")
-        txtQuery.text = Preferences.userRoot().get("query", "")
-
-        background {
-            galleries = FilteredList(observableList(controller.listGalleries()), {
-                it.title.contains(txtQuery.text, true)
-            })
-        } ui {
-            galleriesList.items = galleries
-        }
+        cmbParsers.selectionModel.selectedItemProperty().addListener({ obs, o, newParser ->
+            background {
+                galleries = FilteredList(observableList(newParser.galleries), {
+                    it.title.contains(txtQuery.text, true)
+                })
+            } ui {
+                Preferences.userRoot().put("parser", newParser.title)
+                galleriesList.items = galleries
+            }
+        })
 
         txtQuery.textProperty().addListener({
             value, old, new ->
@@ -60,15 +63,15 @@ class MainLayout : View() {
             }
         }
 
-        btnRefresh.onAction = EventHandler {
-            background {
-                galleries = FilteredList(observableList(controller.refreshGalleries()), {
-                    it.title.contains(txtQuery.text, true)
-                })
-            } ui {
-                galleriesList.items = galleries
-            }
-        }
+//        btnRefresh.onAction = EventHandler {
+//            background {
+//                galleries = FilteredList(observableList(controller.refreshGalleries()), {
+//                    it.title.contains(txtQuery.text, true)
+//                })
+//            } ui {
+//                galleriesList.items = galleries
+//            }
+//        }
 
         galleriesList.getSelectionModel().selectedItemProperty().addListener({
             observableValue, old, newGallery ->
@@ -91,6 +94,16 @@ class MainLayout : View() {
                 }
             }
         })
+
+        txtSavePath.text = Preferences.userRoot().get("savepath", ".")
+        txtQuery.text = Preferences.userRoot().get("query", "")
+
+        cmbParsers.items = observableList(listOf(ThePlaceParser()))
+        var galleryItem = cmbParsers.items.find { it.title == Preferences.userRoot().get("parser", "") }
+        if (galleryItem != null)
+            cmbParsers.selectionModel.select(galleryItem)
+        else
+            cmbParsers.selectionModel.select(cmbParsers.items[0])
     }
 
 

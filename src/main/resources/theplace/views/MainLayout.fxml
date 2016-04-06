@@ -11,7 +11,7 @@
       <HBox spacing="8.0">
          <children>
             <TextField fx:id="txtQuery" />
-            <ChoiceBox fx:id="cmbParsers" prefWidth="150.0" />
+            <ComboBox fx:id="cmbParsers" prefWidth="150.0" />
             <Button fx:id="btnRefresh" mnemonicParsing="false" text="Refresh" />
             <Region HBox.hgrow="ALWAYS" />
             <Label maxHeight="1.7976931348623157E308" text="Save path" textAlignment="CENTER" HBox.hgrow="ALWAYS" />

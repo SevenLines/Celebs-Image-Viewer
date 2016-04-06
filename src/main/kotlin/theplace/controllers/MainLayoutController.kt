@@ -11,18 +11,18 @@ import tornadofx.Controller
  * Created by mk on 03.04.16.
  */
 class MainLayoutController : Controller() {
-    var parser: BaseParser? = null
+//    var parser: BaseParser? = null
 
     init {
-        parser = ThePlaceParser()
+//        parser = ThePlaceParser()
     }
 
-    fun refreshGalleries(): List<Gallery> {
-        parser?.refreshGalleries()
-        return listGalleries()
-    }
-
-    fun listGalleries(): List<Gallery> {
-        return parser?.galleries ?: emptyList()
-    }
+//    fun refreshGalleries(): List<Gallery> {
+//        parser?.refreshGalleries()
+//        return listGalleries()
+//    }
+//
+//    fun listGalleries(): List<Gallery> {
+//        return parser?.galleries ?: emptyList()
+//    }
 }
