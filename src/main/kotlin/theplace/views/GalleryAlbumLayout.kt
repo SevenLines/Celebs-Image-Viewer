@@ -14,6 +14,7 @@ import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.FlowPane
 import javafx.scene.layout.VBox
+import javafx.scene.shape.Rectangle
 import javafx.util.Duration
 import theplace.parsers.elements.GalleryAlbum
 import tornadofx.Fragment
@@ -30,11 +31,12 @@ class GalleryAlbumLayout(album: GalleryAlbum) : Fragment() {
     val flowPanel: FlowPane by fxid()
     val imageContainer: ImageView by fxid()
     val imageWrapContainer: BorderPane by fxid()
+
     val imageContainerShowAnimation = ParallelTransition(imageWrapContainer)
 
     companion object {
-        @JvmField
-        val imageLoading = Image(GalleryAlbumLayout::class.java.getResourceAsStream("images/loading.gif"))
+        @JvmStatic val imageLoading = Image(GalleryAlbumLayout::class.java.getResourceAsStream("images/loading.gif"))
+        @JvmStatic val duration = Duration(300.0)
     }
 
     fun setFit(isReal: Boolean=false) {
@@ -49,16 +51,15 @@ class GalleryAlbumLayout(album: GalleryAlbum) : Fragment() {
 
     fun prepareAnimation() {
         // WRAPPER ANIMATION
-        val imageContainerFadeTransition = FadeTransition(Duration(300.0), imageWrapContainer)
+        val imageContainerFadeTransition = FadeTransition(duration, imageWrapContainer)
         imageContainerFadeTransition.fromValue = 0.0
         imageContainerFadeTransition.interpolator = Interpolator.EASE_BOTH
         imageContainerFadeTransition.toValue = 1.0
 
-        val imageContainerTranslateTransition = TranslateTransition(Duration(300.0), imageWrapContainer)
+        val imageContainerTranslateTransition = TranslateTransition(duration, imageWrapContainer)
         imageContainerTranslateTransition.fromYProperty().bind(
                 SimpleIntegerProperty(0).subtract(imageWrapContainer.heightProperty()))
         imageContainerTranslateTransition.toY = 0.0
-        imageContainerTranslateTransition.isAutoReverse
         imageContainerTranslateTransition.interpolator = Interpolator.EASE_BOTH
 
         imageContainerShowAnimation.children.addAll(imageContainerFadeTransition, imageContainerTranslateTransition)
@@ -73,9 +74,13 @@ class GalleryAlbumLayout(album: GalleryAlbum) : Fragment() {
         imageWrapContainer.onMouseClicked = EventHandler {
             if (it.button == MouseButton.SECONDARY) {
                 imageContainerShowAnimation.rate = -1.0
-                imageContainerShowAnimation.playFrom(Duration(300.0))
+                imageContainerShowAnimation.playFrom(duration)
             }
         }
+        var clipRect = Rectangle(root.width, root.height)
+        clipRect.widthProperty().bind(root.widthProperty())
+        clipRect.heightProperty().bind(root.heightProperty())
+        root.clip = clipRect
         imageWrapContainer.layoutBoundsProperty().addListener({ obj -> setFit() })
 
         background {
