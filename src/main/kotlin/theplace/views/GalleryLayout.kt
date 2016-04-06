@@ -20,12 +20,12 @@ class GalleryLayout(gallery: Gallery) : Fragment() {
 
     init {
         background {
-            gallery.albums
+            gallery.subGalleries[0].albums
         } ui {
             paneLoading.isVisible = false
-            paginator.pageCount = gallery.albums.size
+            paginator.pageCount = gallery.subGalleries[0].albums.size
             sldPage.min = 1.toDouble()
-            sldPage.max = gallery.albums.size.toDouble()
+            sldPage.max = gallery.subGalleries[0].albums.size.toDouble()
         }
 
         sldPage.valueChangingProperty().addListener({ observableValue, t, isNowChanging ->
@@ -36,8 +36,8 @@ class GalleryLayout(gallery: Gallery) : Fragment() {
 
         paginator.pageFactory = Callback { i ->
             run {
-                if (gallery.albums.count() > 0) {
-                    var layout = GalleryAlbumLayout(gallery.albums[i]).root
+                if (gallery.subGalleries[0].albums.count() > 0) {
+                    var layout = GalleryAlbumLayout(gallery.subGalleries[0].albums[i]).root
                     var anchor = AnchorPane()
                     AnchorPane.setLeftAnchor(layout, 10.0)
                     AnchorPane.setRightAnchor(layout, 10.0)

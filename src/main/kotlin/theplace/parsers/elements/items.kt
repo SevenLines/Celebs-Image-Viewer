@@ -12,14 +12,31 @@ import java.nio.file.*
 /**
  * Created by mk on 03.04.16.
  */
-class Gallery(var title: String = "",
-              var url: String = "",
-              var id: Int = -1,
-              @Transient var parser: BaseParser? = null) : Serializable {
+open class Gallery(var title: String = "",
+                   var url: String = "",
+                   var id: Int = -1,
+                   @Transient var parser: BaseParser? = null) : Serializable {
+
+    protected var _subGalleries: List<SubGallery>? = null
+    val subGalleries: List<SubGallery>
+        get() {
+            _subGalleries = if (_subGalleries == null) parser?.getSubGalleries(this) else _subGalleries
+            return _subGalleries as? List<SubGallery> ?: emptyList()
+        }
+
+    override fun toString(): String {
+        return "$title"
+    }
+}
+
+class SubGallery(var title: String = "",
+                 var url: String = "",
+                 var id: Int = -1,
+                 var gallery: Gallery? = null)  {
     protected var _albums: List<GalleryAlbum>? = null
     val albums: List<GalleryAlbum>
         get() {
-            _albums = if (_albums == null) parser?.getAlbums(this) else _albums
+            _albums = if (_albums == null) gallery?.parser?.getAlbums(this) else _albums
             return _albums as? List<GalleryAlbum> ?: emptyList()
         }
 
@@ -27,26 +44,22 @@ class Gallery(var title: String = "",
      * refresh albums binded to this gallery
      */
     fun refreshAlbums() {
-        _albums = parser?.getAlbums(this)
+        _albums = gallery?.parser?.getAlbums(this)
     }
 
-    override fun toString(): String {
-        return "$title"
-    }
 }
-
 
 class GalleryAlbum(var url: String = "",
                    var title: String = "",
-                   var gallery: Gallery? = null) {
+                   var subgallery: SubGallery? = null) {
     override fun toString(): String {
-        return "GalleryAlbum: ${gallery?.title} [url: $url]"
+        return "GalleryAlbum: ${subgallery?.title} [url: $url]"
     }
 
     protected var _images: List<GalleryImage>? = null
     val images: List<GalleryImage>
         get() {
-            _images = if (_images == null) gallery?.parser?.getImages(this) else _images
+            _images = if (_images == null) subgallery?.gallery?.parser?.getImages(this) else _images
             return _images as? List<GalleryImage> ?: emptyList()
         }
 }
@@ -64,11 +77,12 @@ class GalleryImage(var title: String = "",
         title = FilenameUtils.getName(url)
     }
 
-    fun get_path(directory_path: String, filename: String=title) =
+    fun get_path(directory_path: String, filename: String = title) =
             Paths.get(directory_path,
                     album?.title ?: "",
-                    album?.gallery?.title ?: "",
-                    album?.gallery?.parser?.title ?: "",
+                    album?.subgallery?.title ?: "",
+                    album?.subgallery?.gallery?.title ?: "",
+                    album?.subgallery?.gallery?.parser?.title ?: "",
                     filename).toString()
 
 
@@ -79,7 +93,7 @@ class GalleryImage(var title: String = "",
         if (Files.exists(Paths.get(path))) {
             return FileInputStream(path)
         } else {
-            stream_data = album?.gallery?.parser?.downloadImage(url)
+            stream_data = album?.subgallery?.gallery?.parser?.downloadImage(url)
             FileUtils.copyInputStreamToFile(stream_data, File(path))
             stream_data?.reset()
             return stream_data

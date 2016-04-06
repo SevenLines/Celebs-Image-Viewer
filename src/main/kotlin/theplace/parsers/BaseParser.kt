@@ -7,6 +7,7 @@ import org.apache.commons.io.FileUtils
 import theplace.parsers.elements.Gallery
 import theplace.parsers.elements.GalleryAlbum
 import theplace.parsers.elements.GalleryImage
+import theplace.parsers.elements.SubGallery
 import java.io.*
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -37,7 +38,7 @@ abstract class BaseParser(var url: String = "", var title: String = "") {
             if (_galleries == null) {
                 refreshGalleries()
             }
-            return _galleries as? List<Gallery> ?: emptyList()
+            return _galleries?.sortedBy { it.title } as? List<Gallery> ?: emptyList()
         }
 
     fun refreshGalleries() {
@@ -50,12 +51,18 @@ abstract class BaseParser(var url: String = "", var title: String = "") {
         FileUtils.writeStringToFile(path.toFile(), data)
     }
 
-    fun getGalleryById(id: Int): Gallery? = galleries.find { it.id == id }
-
     abstract fun getGalleries_internal(): List<Gallery>
-    abstract fun getAlbums(gallery: Gallery): List<GalleryAlbum>
+    abstract fun getAlbums(subGallery: SubGallery): List<GalleryAlbum>
     abstract fun getImages(album: GalleryAlbum): List<GalleryImage>
     abstract fun downloadImage(image_url: String): InputStream?
+
+    fun getSubGalleries(gallery: Gallery) : List<SubGallery> {
+        return listOf(SubGallery(
+                title=gallery.title,
+                id=gallery.id,
+                url=gallery.url,
+                gallery=gallery))
+    }
 
     override fun toString(): String {
         return title

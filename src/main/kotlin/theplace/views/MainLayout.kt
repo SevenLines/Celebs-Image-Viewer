@@ -4,10 +4,14 @@ import javafx.collections.FXCollections.observableList
 import javafx.collections.transformation.FilteredList
 import javafx.event.EventHandler
 import javafx.scene.control.*
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyCombination
+import javafx.scene.input.Mnemonic
 import javafx.scene.layout.VBox
 import javafx.stage.DirectoryChooser
 import theplace.controllers.MainLayoutController
 import theplace.parsers.BaseParser
+import theplace.parsers.SuperiorPics
 import theplace.parsers.ThePlaceParser
 import theplace.parsers.elements.Gallery
 import tornadofx.View
@@ -63,6 +67,15 @@ class MainLayout : View() {
             }
         }
 
+        root.onKeyPressed = EventHandler {
+            if (it.isControlDown && it.code == KeyCode.W) {
+                if (tabPane.selectionModel.selectedItem != null) {
+                    tabMap.remove(tabPane.selectionModel.selectedItem.userData)
+                    tabPane.tabs.remove(tabPane.selectionModel.selectedItem)
+                }
+            }
+        }
+
 //        btnRefresh.onAction = EventHandler {
 //            background {
 //                galleries = FilteredList(observableList(controller.refreshGalleries()), {
@@ -87,7 +100,11 @@ class MainLayout : View() {
                         tabPane.tabs.add(0, tab)
                         tabPane.selectionModel.select(0)
 
-                        tab.onClosed = EventHandler { tabMap.remove(newGallery) }
+                        tab.onClosed = EventHandler {
+                            System.out.println("closed")
+                            tabMap.remove(newGallery)
+                        }
+                        tab.userData = newGallery
 
                         tabMap.set(newGallery, tab)
                     }

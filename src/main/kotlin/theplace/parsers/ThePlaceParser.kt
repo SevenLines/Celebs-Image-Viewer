@@ -6,6 +6,7 @@ import org.jsoup.nodes.Element
 import theplace.parsers.elements.Gallery
 import theplace.parsers.elements.GalleryAlbum
 import theplace.parsers.elements.GalleryImage
+import theplace.parsers.elements.SubGallery
 import java.io.InputStream
 
 
@@ -47,8 +48,8 @@ class ThePlaceParser() : BaseParser("http://www.theplace.ru", "theplace") {
         return out
     }
 
-    override fun getAlbums(gallery: Gallery): List<GalleryAlbum> {
-        val response = Unirest.get("${url}${gallery.url}").asString()
+    override fun getAlbums(subGallery: SubGallery): List<GalleryAlbum> {
+        val response = Unirest.get("${url}${subGallery.url}").asString()
         val doc = Jsoup.parse(response.body)
         val links = doc.select(".listalka.ltop a")
         val items = links.map { it.text() }.filter { "\\d+".toRegex().matches(it) }.map { it.toInt() }
@@ -58,8 +59,8 @@ class ThePlaceParser() : BaseParser("http://www.theplace.ru", "theplace") {
         }
 
         return IntRange(1, count ?: 1).map {
-            var href = "/photos/gallery.php?id=${gallery.id}&page=$it"
-            GalleryAlbum(url=href, gallery=gallery)
+            var href = "/photos/gallery.php?id=${subGallery.id}&page=$it"
+            GalleryAlbum(url=href, subgallery= subGallery)
         }
     }
 }
