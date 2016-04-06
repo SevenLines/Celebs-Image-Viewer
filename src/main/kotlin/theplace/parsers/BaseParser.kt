@@ -1,7 +1,9 @@
 package theplace.parsers
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import org.apache.commons.io.FileUtils
-import org.yaml.snakeyaml.Yaml
 import theplace.parsers.elements.Gallery
 import theplace.parsers.elements.GalleryAlbum
 import theplace.parsers.elements.GalleryImage
@@ -20,13 +22,13 @@ abstract class BaseParser(var url: String = "", var title: String = "") {
     }
 
     init {
-        var path = Paths.get(PARSERS_DIR, title)
+        var path = Paths.get(PARSERS_DIR, "$title.json")
         if (Files.exists(path)) {
-            var fs = FileInputStream(path.toFile())
-            var os = ObjectInputStream(fs)
-            _galleries = os.readObject() as List<Gallery>
+            var data = FileUtils.readFileToString(path.toFile())
+            var gson = Gson()
+            var typeToken = object : TypeToken<List<Gallery>>() {}.type
+            _galleries = gson.fromJson(data, typeToken)
             _galleries?.forEach { it.parser = this }
-            os.close()
         }
     }
 
@@ -39,12 +41,13 @@ abstract class BaseParser(var url: String = "", var title: String = "") {
         }
 
     fun refreshGalleries() {
-        var path = Paths.get(PARSERS_DIR, title)
+        var path = Paths.get(PARSERS_DIR, "$title.json")
         _galleries = getGalleries_internal()
-        var fs = FileOutputStream(path.toFile())
-        var os = ObjectOutputStream(fs)
-        os.writeObject(_galleries)
-        os.close()
+
+        var gson = GsonBuilder().setPrettyPrinting().create()
+        var data = gson.toJson(_galleries)
+
+        FileUtils.writeStringToFile(path.toFile(), data)
     }
 
     fun getGalleryById(id: Int): Gallery? = galleries.find { it.id == id }

@@ -75,7 +75,7 @@ class GalleryImage(var title: String = "",
     fun downloadImage(url: String): InputStream? {
         var file_name = Paths.get(url).fileName.toString()
         var path = get_path(CACHE_DIR, file_name)
-        var stream_data: InputStream? = null
+        var stream_data: InputStream?
         if (Files.exists(Paths.get(path))) {
             return FileInputStream(path)
         } else {

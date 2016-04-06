@@ -37,7 +37,8 @@ class GalleryImageLayout(val img: GalleryImage) : Fragment() {
     var iconRemove: ImageView = ImageView(imageRemove)
     var iconLoading: ImageView = ImageView(imageLoading)
     var isDownloading = false
-    var opTransition = TranslateTransition(Duration(300.0), overlayPane)
+    var slideTransition = TranslateTransition(Duration(300.0), overlayPane)
+//    var slideTransitionRev = TranslateTransition(Duration(300.0), overlayPane)
     var onImageClick: EventHandler<MouseEvent>? = null
 
     companion object {
@@ -62,11 +63,15 @@ class GalleryImageLayout(val img: GalleryImage) : Fragment() {
 
         if (!isDownloading) {
             if (CURRENT_IMAGE.value != this) {
-                overlayPane.isVisible = false
+                slideTransition.rate = -1.0
+                slideTransition.setOnFinished { overlayPane.isVisible = false }
+                slideTransition.play()
                 return
             } else {
                 overlayPane.isVisible = true
-                opTransition.play()
+                slideTransition.setOnFinished {}
+                slideTransition.rate = 1.0
+                slideTransition.play()
             }
         }
     }
@@ -80,9 +85,9 @@ class GalleryImageLayout(val img: GalleryImage) : Fragment() {
         root.clip = clipRect
 
         overlayPane.center = iconLoading
-        opTransition.interpolator = Interpolator.EASE_OUT
-        opTransition.fromYProperty().bind(root.heightProperty())
-        opTransition.toYProperty().bind(root.heightProperty().subtract(overlayPane.heightProperty()).subtract(3))
+        slideTransition.interpolator = Interpolator.EASE_OUT
+        slideTransition.fromYProperty().bind(root.heightProperty())
+        slideTransition.toYProperty().bind(root.heightProperty().subtract(overlayPane.heightProperty()).subtract(3))
 
         background {
             img_data = img.download_thumb()
@@ -95,7 +100,7 @@ class GalleryImageLayout(val img: GalleryImage) : Fragment() {
             update_interface()
         })
 
-        root.addEventHandler(MouseEvent.MOUSE_ENTERED_TARGET, EventHandler {
+        root.addEventHandler(MouseEvent.MOUSE_ENTERED_TARGET, {
             CURRENT_IMAGE.set(this)
         })
 

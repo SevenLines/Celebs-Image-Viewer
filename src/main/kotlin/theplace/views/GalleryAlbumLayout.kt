@@ -5,7 +5,6 @@ import javafx.animation.Interpolator
 import javafx.animation.ParallelTransition
 import javafx.animation.TranslateTransition
 import javafx.beans.property.SimpleIntegerProperty
-import javafx.beans.value.ChangeListener
 import javafx.event.EventHandler
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
@@ -13,14 +12,10 @@ import javafx.scene.input.MouseButton
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.FlowPane
-import javafx.scene.layout.VBox
 import javafx.scene.shape.Rectangle
 import javafx.util.Duration
 import theplace.parsers.elements.GalleryAlbum
 import tornadofx.Fragment
-import tornadofx.View
-import tornadofx.add
-import java.io.Console
 import java.io.InputStream
 
 /**
@@ -74,7 +69,7 @@ class GalleryAlbumLayout(album: GalleryAlbum) : Fragment() {
         imageWrapContainer.onMouseClicked = EventHandler {
             if (it.button == MouseButton.SECONDARY) {
                 imageContainerShowAnimation.rate = -1.0
-                imageContainerShowAnimation.playFrom(duration)
+                imageContainerShowAnimation.play()
             }
         }
         var clipRect = Rectangle(root.width, root.height)
