@@ -6,15 +6,16 @@ import theplace.parsers.BaseParser
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
+import java.io.Serializable
 import java.nio.file.*
 
 /**
  * Created by mk on 03.04.16.
  */
-class Gallery(val title: String = "",
-              val url: String = "",
-              val id: Int = -1,
-              var parser: BaseParser? = null) {
+class Gallery(var title: String = "",
+              var url: String = "",
+              var id: Int = -1,
+              @Transient var parser: BaseParser? = null) : Serializable {
     protected var _albums: List<GalleryAlbum>? = null
     val albums: List<GalleryAlbum>
         get() {

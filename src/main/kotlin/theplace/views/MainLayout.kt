@@ -20,6 +20,7 @@ class MainLayout : View() {
     val galleriesList: ListView<Gallery> by fxid()
 
     val btnSavePathSelector: Button by fxid()
+    val btnRefresh: Button by fxid()
     val txtQuery: TextField by fxid()
     val txtSavePath: TextField by fxid()
     val tabPane: TabPane by fxid()
@@ -56,6 +57,16 @@ class MainLayout : View() {
             if (file != null) {
                 txtSavePath.text = file.absolutePath
                 Preferences.userRoot().put("savepath", file.absolutePath)
+            }
+        }
+
+        btnRefresh.onAction = EventHandler {
+            background {
+                galleries = FilteredList(observableList(controller.refreshGalleries()), {
+                    it.title.contains(txtQuery.text, true)
+                })
+            } ui {
+                galleriesList.items = galleries
             }
         }
 

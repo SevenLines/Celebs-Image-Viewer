@@ -17,6 +17,11 @@ class MainLayoutController : Controller() {
         parser = ThePlaceParser()
     }
 
+    fun refreshGalleries(): List<Gallery> {
+        parser?.refreshGalleries()
+        return listGalleries()
+    }
+
     fun listGalleries(): List<Gallery> {
         return parser?.galleries ?: emptyList()
     }

@@ -17,6 +17,14 @@ class GalleryLayout(gallery: Gallery) : Fragment() {
     val sldPage: Slider by fxid()
 
     init {
+//        background {
+        gallery.albums
+//        } ui {
+        paginator.pageCount = gallery.albums.size
+        sldPage.min = 1.toDouble()
+        sldPage.max = gallery.albums.size.toDouble()
+//        }
+
         sldPage.valueChangingProperty().addListener({ observableValue, t, isNowChanging ->
             if (!isNowChanging) {
                 paginator.currentPageIndex = sldPage.value.toInt() - 1
@@ -25,16 +33,19 @@ class GalleryLayout(gallery: Gallery) : Fragment() {
 
         paginator.pageFactory = Callback { i ->
             run {
-                var layout = GalleryAlbumLayout(gallery.albums[i]).root
-                var anchor = AnchorPane()
-                AnchorPane.setLeftAnchor(layout, 10.0)
-                AnchorPane.setRightAnchor(layout, 10.0)
-                AnchorPane.setTopAnchor(layout, 10.0)
-                AnchorPane.setBottomAnchor(layout, 10.0)
-                anchor.children.add(layout)
+                if (gallery.albums.count() > 0) {
+                    var layout = GalleryAlbumLayout(gallery.albums[i]).root
+                    var anchor = AnchorPane()
+                    AnchorPane.setLeftAnchor(layout, 10.0)
+                    AnchorPane.setRightAnchor(layout, 10.0)
+                    AnchorPane.setTopAnchor(layout, 10.0)
+                    AnchorPane.setBottomAnchor(layout, 10.0)
+                    anchor.children.add(layout)
 
-                sldPage.value = i.toDouble() + 1
-                return@run anchor
+                    sldPage.value = i.toDouble() + 1
+                    return@run anchor
+                }
+                return@Callback null
             }
         }
 
@@ -47,14 +58,5 @@ class GalleryLayout(gallery: Gallery) : Fragment() {
                 }
             }
         }
-
-        background {
-            gallery.albums
-        } ui {
-            paginator.pageCount = gallery.albums.size
-            sldPage.min = 1.toDouble()
-            sldPage.max = gallery.albums.size.toDouble()
-        }
-
     }
 }

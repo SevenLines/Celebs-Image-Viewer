@@ -48,7 +48,7 @@ class GalleryImageLayout(val img: GalleryImage) : Fragment() {
         @JvmStatic val CACHE_DIR = "./"
     }
 
-    fun update_interface(force: Boolean = false, check_exists: Boolean = false) {
+    fun update_interface(check_exists: Boolean = false) {
         if (check_exists) {
             var exists = img.exists(savePath())
             if (exists) {
@@ -92,7 +92,7 @@ class GalleryImageLayout(val img: GalleryImage) : Fragment() {
         }
 
         CURRENT_IMAGE.addListener({ obs ->
-            update_interface(true)
+            update_interface()
         })
 
         root.addEventHandler(MouseEvent.MOUSE_ENTERED_TARGET, EventHandler {
@@ -117,11 +117,11 @@ class GalleryImageLayout(val img: GalleryImage) : Fragment() {
                     }
                 } ui {
                     isDownloading = false
-                    update_interface(true, true)
+                    update_interface(true)
                 }
             }
         }
         image.onMouseClicked = EventHandler { onImageClick?.handle(it) }
-        update_interface(true, true)
+        update_interface(true)
     }
 }

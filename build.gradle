@@ -27,6 +27,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'no.tornado:tornadofx:1.4.1'
     compile 'commons-io:commons-io:2.4'
+    compile 'org.yaml:snakeyaml:1.17'
 }
 
 jar {

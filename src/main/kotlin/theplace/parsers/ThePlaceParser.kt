@@ -38,10 +38,13 @@ class ThePlaceParser() : BaseParser("http://www.theplace.ru", "theplace") {
     }
 
     override fun getGalleries_internal(): List<Gallery> {
-        val response = Unirest.get("${url}/photos").queryString("s_id", "0").asString()
-        val doc = Jsoup.parse(response.body)
-        val links = doc.select(".td_all .main-col-content .clearfix a")
-        return links.map { galleryItemForLink(it) }
+        var out = IntRange(0, 3).map {
+            val response = Unirest.get("${url}/photos").queryString("s_id", it.toString()).asString()
+            val doc = Jsoup.parse(response.body)
+            val links = doc.select(".td_all .main-col-content .clearfix a")
+            return@map links.map { galleryItemForLink(it) }
+        }.reduce { list, list2 -> list + list2 }
+        return out
     }
 
     override fun getAlbums(gallery: Gallery): List<GalleryAlbum> {
