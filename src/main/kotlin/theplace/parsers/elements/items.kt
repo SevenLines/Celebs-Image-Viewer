@@ -51,6 +51,7 @@ class SubGallery(var title: String = "",
 
 class GalleryAlbum(var url: String = "",
                    var title: String = "",
+                   var thumb: GalleryImage? = null,
                    var subgallery: SubGallery? = null) {
     override fun toString(): String {
         return "GalleryAlbum: ${subgallery?.title} [url: $url]"

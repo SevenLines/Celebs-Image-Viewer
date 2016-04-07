@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox
 import javafx.stage.DirectoryChooser
 import theplace.controllers.MainLayoutController
 import theplace.parsers.BaseParser
+import theplace.parsers.SuperiorPicsParser
 import theplace.parsers.ThePlaceParser
 import theplace.parsers.elements.Gallery
 import tornadofx.View
@@ -32,6 +33,11 @@ class MainLayout : View() {
 
     var galleries: FilteredList<Gallery>? = null
     var tabMap: MutableMap<Gallery, Tab> = mutableMapOf()
+
+    private var parsers = observableList(listOf(
+            ThePlaceParser(),
+            SuperiorPicsParser()
+    ))
 
     init {
         cmbParsers.selectionModel.selectedItemProperty().addListener({ obs, o, newParser ->
@@ -110,7 +116,7 @@ class MainLayout : View() {
         txtSavePath.text = Preferences.userRoot().get("savepath", ".")
         txtQuery.text = Preferences.userRoot().get("query", "")
 
-        cmbParsers.items = observableList(listOf(ThePlaceParser()))
+        cmbParsers.items = parsers
         var galleryItem = cmbParsers.items.find { it.title == Preferences.userRoot().get("parser", "") }
         if (galleryItem != null)
             cmbParsers.selectionModel.select(galleryItem)

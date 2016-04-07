@@ -84,8 +84,8 @@ class GalleryAlbumLayout(album: GalleryAlbum) : Fragment() {
             album.images
         } ui {
             flowPanel.children.addAll(album.images.map {
-                var gall = GalleryImageLayout(it)
-                gall.onImageClick = EventHandler {
+                var galleryImageLayout = GalleryImageLayout(it)
+                galleryImageLayout.onImageClick = EventHandler {
                     if (it.button == MouseButton.PRIMARY) {
                         imageContainer.image = imageLoading
                         imageWrapContainer.isVisible = true
@@ -96,7 +96,7 @@ class GalleryAlbumLayout(album: GalleryAlbum) : Fragment() {
                         setFit(true)
 
                         background {
-                            image_data = gall.img.download()
+                            image_data = galleryImageLayout.img.download()
                         } ui {
                             if (image_data != null) {
                                 setFit(false)
@@ -108,7 +108,8 @@ class GalleryAlbumLayout(album: GalleryAlbum) : Fragment() {
                         }
                     }
                 }
-                return@map gall.root
+                galleryImageLayout.root.maxHeightProperty().bind(root.heightProperty().divide(3))
+                return@map galleryImageLayout.root
             })
             albumLoadingComplete.set(true)
         }
