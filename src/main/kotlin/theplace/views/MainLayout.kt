@@ -5,13 +5,10 @@ import javafx.collections.transformation.FilteredList
 import javafx.event.EventHandler
 import javafx.scene.control.*
 import javafx.scene.input.KeyCode
-import javafx.scene.input.KeyCombination
-import javafx.scene.input.Mnemonic
 import javafx.scene.layout.VBox
 import javafx.stage.DirectoryChooser
 import theplace.controllers.MainLayoutController
 import theplace.parsers.BaseParser
-import theplace.parsers.SuperiorPics
 import theplace.parsers.ThePlaceParser
 import theplace.parsers.elements.Gallery
 import tornadofx.View
