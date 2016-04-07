@@ -85,26 +85,24 @@ class MainLayout : View() {
 
         galleriesList.getSelectionModel().selectedItemProperty().addListener({
             observableValue, old, newGallery ->
-            run {
-                if (newGallery != null) {
-                    if (tabMap.containsKey(newGallery)) {
-                        var tab = tabMap.get(newGallery)
-                        tabPane.selectionModel.select(tab)
-                    } else {
-                        var tab = Tab()
-                        tab.text = newGallery.title
-                        tab.content = GalleryLayout(newGallery).root
-                        tabPane.tabs.add(0, tab)
-                        tabPane.selectionModel.select(0)
+            if (newGallery != null) {
+                if (tabMap.containsKey(newGallery)) {
+                    var tab = tabMap.get(newGallery)
+                    tabPane.selectionModel.select(tab)
+                } else {
+                    var tab = Tab()
+                    tab.text = newGallery.title
+                    tab.content = GalleryLayout(newGallery).root
+                    tabPane.tabs.add(0, tab)
+                    tabPane.selectionModel.select(0)
 
-                        tab.onClosed = EventHandler {
-                            System.out.println("closed")
-                            tabMap.remove(newGallery)
-                        }
-                        tab.userData = newGallery
-
-                        tabMap.set(newGallery, tab)
+                    tab.onClosed = EventHandler {
+                        System.out.println("closed")
+                        tabMap.remove(newGallery)
                     }
+                    tab.userData = newGallery
+
+                    tabMap.set(newGallery, tab)
                 }
             }
         })

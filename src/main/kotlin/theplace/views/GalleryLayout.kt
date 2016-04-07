@@ -22,22 +22,16 @@ class GalleryLayout(gallery: Gallery) : Fragment() {
         background {
             gallery.subGalleries[0].albums
         } ui {
-            paneLoading.isVisible = false
             paginator.pageCount = gallery.subGalleries[0].albums.size
             sldPage.min = 1.toDouble()
             sldPage.max = gallery.subGalleries[0].albums.size.toDouble()
-        }
 
-        sldPage.valueChangingProperty().addListener({ observableValue, t, isNowChanging ->
-            if (!isNowChanging) {
-                paginator.currentPageIndex = sldPage.value.toInt() - 1
-            }
-        })
-
-        paginator.pageFactory = Callback { i ->
-            run {
+            paginator.pageFactory = Callback { i ->
                 if (gallery.subGalleries[0].albums.count() > 0) {
-                    var layout = GalleryAlbumLayout(gallery.subGalleries[0].albums[i]).root
+                    var albumLayout = GalleryAlbumLayout(gallery.subGalleries[0].albums[i])
+                    var layout = albumLayout.root
+                    paneLoading.visibleProperty().bind(albumLayout.albumLoadingComplete.not())
+
                     var anchor = AnchorPane()
                     AnchorPane.setLeftAnchor(layout, 10.0)
                     AnchorPane.setRightAnchor(layout, 10.0)
@@ -46,11 +40,17 @@ class GalleryLayout(gallery: Gallery) : Fragment() {
                     anchor.children.add(layout)
 
                     sldPage.value = i.toDouble() + 1
-                    return@run anchor
+                    return@Callback anchor
                 }
                 return@Callback null
             }
         }
+
+        sldPage.valueChangingProperty().addListener({ observableValue, t, isNowChanging ->
+            if (!isNowChanging) {
+                paginator.currentPageIndex = sldPage.value.toInt() - 1
+            }
+        })
 
         root.onScroll = EventHandler {
             if (it.isControlDown) {

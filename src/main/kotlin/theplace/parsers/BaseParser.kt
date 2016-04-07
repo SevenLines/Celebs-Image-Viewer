@@ -58,7 +58,7 @@ abstract class BaseParser(var url: String = "", var title: String = "") {
 
     fun getSubGalleries(gallery: Gallery) : List<SubGallery> {
         return listOf(SubGallery(
-                title=gallery.title,
+                title="",
                 id=gallery.id,
                 url=gallery.url,
                 gallery=gallery))

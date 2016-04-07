@@ -4,6 +4,7 @@ import javafx.animation.FadeTransition
 import javafx.animation.Interpolator
 import javafx.animation.ParallelTransition
 import javafx.animation.TranslateTransition
+import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.event.EventHandler
 import javafx.scene.image.Image
@@ -28,6 +29,7 @@ class GalleryAlbumLayout(album: GalleryAlbum) : Fragment() {
     val imageWrapContainer: BorderPane by fxid()
 
     val imageContainerShowAnimation = ParallelTransition(imageWrapContainer)
+    val albumLoadingComplete = SimpleBooleanProperty(false)
 
     companion object {
         @JvmStatic val imageLoading = Image(GalleryAlbumLayout::class.java.getResourceAsStream("images/loading.gif"))
@@ -108,6 +110,7 @@ class GalleryAlbumLayout(album: GalleryAlbum) : Fragment() {
                 }
                 return@map gall.root
             })
+            albumLoadingComplete.set(true)
         }
     }
 }

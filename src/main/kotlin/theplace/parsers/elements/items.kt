@@ -79,10 +79,10 @@ class GalleryImage(var title: String = "",
 
     fun get_path(directory_path: String, filename: String = title) =
             Paths.get(directory_path,
-                    album?.title ?: "",
-                    album?.subgallery?.title ?: "",
                     album?.subgallery?.gallery?.title ?: "",
                     album?.subgallery?.gallery?.parser?.title ?: "",
+                    album?.subgallery?.title ?: "",
+                    album?.title ?: "",
                     filename).toString()
 
 
