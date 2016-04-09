@@ -2,16 +2,19 @@ package theplace.parsers
 
 import com.mashape.unirest.http.Unirest
 import org.jsoup.Jsoup
-import theplace.parsers.elements.Gallery
-import theplace.parsers.elements.GalleryAlbum
-import theplace.parsers.elements.GalleryImage
-import theplace.parsers.elements.SubGallery
+import theplace.parsers.elements.*
 import java.io.InputStream
 
 /**
  * Created by mk on 07.04.16.
  */
 class SuperiorPicsParser : BaseParser(url = "http://forums.superiorpics.com/", title = "superiorpics") {
+    override var isAlwaysOnePage = true
+
+    override fun getAlbumPages(album: GalleryAlbum): List<GalleryAlbumPage> {
+        return listOf(GalleryAlbumPage(url = album.url, album = album))
+    }
+
     override fun getAlbums(subGallery: SubGallery): List<GalleryAlbum> {
         var r = Unirest.get(subGallery.url).asString()
         var doc = Jsoup.parse(r.body)
@@ -29,7 +32,11 @@ class SuperiorPicsParser : BaseParser(url = "http://forums.superiorpics.com/", t
                     title = title,
                     subgallery = subGallery
             )
-            album.thumb = GalleryImage(url = thumb_url, url_thumb = thumb_url, album = album)
+            album.thumb = GalleryImage(
+                    url = thumb_url,
+                    url_thumb = thumb_url,
+                    album = album
+            )
             return@map album
         }
     }
@@ -38,8 +45,8 @@ class SuperiorPicsParser : BaseParser(url = "http://forums.superiorpics.com/", t
         throw UnsupportedOperationException()
     }
 
-    override fun getImages(album: GalleryAlbum): List<GalleryImage> {
-        var r = Unirest.get(album.url).asString()
+    override fun getImages(albumPage: GalleryAlbumPage): List<GalleryImage> {
+        var r = Unirest.get(albumPage.url).asString()
         var doc = Jsoup.parse(r.body)
         var links = doc.select(".post-content .post_inner a")
         return links.filter {
@@ -49,7 +56,7 @@ class SuperiorPicsParser : BaseParser(url = "http://forums.superiorpics.com/", t
             var url = it.attr("href")
             var url_thumb = it.select("img").first()?.attr("src")
             if (url_thumb != null) {
-                GalleryImage(album = album, url = url, url_thumb = url_thumb)
+                GalleryImage(page = albumPage, album = albumPage.album, url = url, url_thumb = url_thumb)
             } else {
                 return@map null
             }

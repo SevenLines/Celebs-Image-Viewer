@@ -32,7 +32,7 @@ open class Gallery(var title: String = "",
 class SubGallery(var title: String = "",
                  var url: String = "",
                  var id: Int = -1,
-                 var gallery: Gallery? = null)  {
+                 var gallery: Gallery? = null) {
     protected var _albums: List<GalleryAlbum>? = null
     val albums: List<GalleryAlbum>
         get() {
@@ -51,16 +51,26 @@ class SubGallery(var title: String = "",
 
 class GalleryAlbum(var url: String = "",
                    var title: String = "",
+                   var id: Int = -1,
                    var thumb: GalleryImage? = null,
                    var subgallery: SubGallery? = null) {
     override fun toString(): String {
         return "GalleryAlbum: ${subgallery?.title} [url: $url]"
     }
 
+    protected var _pages: List<GalleryAlbumPage>? = null
+    val pages: List<GalleryAlbumPage>
+        get() {
+            _pages = if (_pages == null) subgallery?.gallery?.parser?.getAlbumPages(this) else _pages
+            return _pages as? List<GalleryAlbumPage> ?: emptyList()
+        }
+}
+
+class GalleryAlbumPage(var url: String, var album: GalleryAlbum? = null) {
     protected var _images: List<GalleryImage>? = null
     val images: List<GalleryImage>
         get() {
-            _images = if (_images == null) subgallery?.gallery?.parser?.getImages(this) else _images
+            _images = if (_images == null) album?.subgallery?.gallery?.parser?.getImages(this) else _images
             return _images as? List<GalleryImage> ?: emptyList()
         }
 }
@@ -68,6 +78,7 @@ class GalleryAlbum(var url: String = "",
 class GalleryImage(var title: String = "",
                    val url: String,
                    val url_thumb: String,
+                   var page: GalleryAlbumPage? = null,
                    var album: GalleryAlbum? = null) {
 
     companion object {
@@ -80,10 +91,10 @@ class GalleryImage(var title: String = "",
 
     fun get_path(directory_path: String, filename: String = title) =
             Paths.get(directory_path,
-                    album?.subgallery?.gallery?.title ?: "",
-                    album?.subgallery?.gallery?.parser?.title ?: "",
-                    album?.subgallery?.title ?: "",
-                    album?.title ?: "",
+                    page?.album?.subgallery?.gallery?.title ?: "",
+                    page?.album?.subgallery?.gallery?.parser?.title ?: "",
+                    page?.album?.subgallery?.title ?: "",
+                    page?.album?.title ?: "",
                     filename).toString()
 
 
@@ -94,9 +105,12 @@ class GalleryImage(var title: String = "",
         if (Files.exists(Paths.get(path))) {
             return FileInputStream(path)
         } else {
-            stream_data = album?.subgallery?.gallery?.parser?.downloadImage(url)
-            FileUtils.copyInputStreamToFile(stream_data, File(path))
-            stream_data?.reset()
+            var parser = page?.album?.subgallery?.gallery?.parser ?: album?.subgallery?.gallery?.parser
+            stream_data = parser?.downloadImage(url)
+            if (stream_data != null) {
+                FileUtils.copyInputStreamToFile(stream_data, File(path))
+                stream_data.reset()
+            }
             return stream_data
         }
     }

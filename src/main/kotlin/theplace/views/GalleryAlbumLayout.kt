@@ -15,14 +15,14 @@ import javafx.scene.layout.BorderPane
 import javafx.scene.layout.FlowPane
 import javafx.scene.shape.Rectangle
 import javafx.util.Duration
-import theplace.parsers.elements.GalleryAlbum
+import theplace.parsers.elements.GalleryAlbumPage
 import tornadofx.Fragment
 import java.io.InputStream
 
 /**
  * Created by mk on 03.04.16.
  */
-class GalleryAlbumLayout(album: GalleryAlbum) : Fragment() {
+class GalleryAlbumLayout(albumPage: GalleryAlbumPage) : Fragment() {
     override val root: AnchorPane by fxml()
     val flowPanel: FlowPane by fxid()
     val imageContainer: ImageView by fxid()
@@ -81,9 +81,9 @@ class GalleryAlbumLayout(album: GalleryAlbum) : Fragment() {
         imageWrapContainer.layoutBoundsProperty().addListener({ obj -> setFit() })
 
         background {
-            album.images
+            albumPage.images
         } ui {
-            flowPanel.children.addAll(album.images.map {
+            flowPanel.children.addAll(albumPage.images.map {
                 var galleryImageLayout = GalleryImageLayout(it)
                 galleryImageLayout.onImageClick = EventHandler {
                     if (it.button == MouseButton.PRIMARY) {
@@ -108,7 +108,6 @@ class GalleryAlbumLayout(album: GalleryAlbum) : Fragment() {
                         }
                     }
                 }
-                galleryImageLayout.root.maxHeightProperty().bind(root.heightProperty().divide(3))
                 return@map galleryImageLayout.root
             })
             albumLoadingComplete.set(true)

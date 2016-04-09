@@ -38,7 +38,7 @@ dependencies {
     compile 'no.tornado:tornadofx:1.4.1'
     compile 'commons-io:commons-io:2.4'
     compile 'com.google.code.gson:gson:2.6.2'
-    testCompile 'junit:junit:4.12'
+    testCompile 'org.testng:testng:6.9.10'
 }
 
 jar {

@@ -4,10 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import org.apache.commons.io.FileUtils
-import theplace.parsers.elements.Gallery
-import theplace.parsers.elements.GalleryAlbum
-import theplace.parsers.elements.GalleryImage
-import theplace.parsers.elements.SubGallery
+import theplace.parsers.elements.*
 import java.io.*
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -17,6 +14,9 @@ import java.nio.file.Paths
  */
 abstract class BaseParser(var url: String = "", var title: String = "") {
     protected var _galleries: List<Gallery>? = null
+    open var isAlwaysOneAlbum = false
+    open var isAlwaysOneSubGallery = false
+    open var isAlwaysOnePage = false
 
     companion object {
         @JvmStatic val PARSERS_DIR = "./parsers"
@@ -53,7 +53,8 @@ abstract class BaseParser(var url: String = "", var title: String = "") {
 
     abstract fun getGalleries_internal(): List<Gallery>
     abstract fun getAlbums(subGallery: SubGallery): List<GalleryAlbum>
-    abstract fun getImages(album: GalleryAlbum): List<GalleryImage>
+    abstract fun getAlbumPages(album: GalleryAlbum): List<GalleryAlbumPage>
+    abstract fun getImages(albumPage: GalleryAlbumPage): List<GalleryImage>
     abstract fun downloadImage(image_url: String): InputStream?
 
     open fun getSubGalleries(gallery: Gallery) : List<SubGallery> {

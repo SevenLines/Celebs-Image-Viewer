@@ -7,6 +7,7 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleObjectProperty
+import javafx.beans.value.ChangeListener
 import javafx.event.EventHandler
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
@@ -21,12 +22,15 @@ import tornadofx.Fragment
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.util.*
 import java.util.prefs.Preferences
 
 /**
  * Created by mk on 03.04.16.
  */
-class GalleryImageLayout(val img: GalleryImage) : Fragment() {
+class GalleryImageLayout(val img: GalleryImage,
+                         var isDownloadable: Boolean = true,
+                         var isFitToParent: Boolean = false) : Fragment() {
     override val root: AnchorPane by fxml()
     val image: ImageView by fxid()
     val overlayPane: BorderPane by fxid()
@@ -38,7 +42,8 @@ class GalleryImageLayout(val img: GalleryImage) : Fragment() {
     var iconLoading: ImageView = ImageView(imageLoading)
     var isDownloading = false
     var slideTransition = TranslateTransition(Duration(300.0), overlayPane)
-//    var slideTransitionRev = TranslateTransition(Duration(300.0), overlayPane)
+    var downloadableProperty = SimpleBooleanProperty(isDownloadable)
+    var fitToParentProperty = SimpleBooleanProperty(isFitToParent)
     var onImageClick: EventHandler<MouseEvent>? = null
 
     companion object {
@@ -77,6 +82,15 @@ class GalleryImageLayout(val img: GalleryImage) : Fragment() {
     }
 
     fun savePath() = Preferences.userRoot().get("savepath", ".")
+    fun  updateFitToParentProperty(new: Boolean) {
+        if (new) {
+            image.fitHeightProperty().bind(imageContainer.prefHeightProperty())
+            image.fitWidthProperty().bind(imageContainer.prefWidthProperty())
+        } else {
+            image.fitHeightProperty().unbind()
+            image.fitWidthProperty().unbind()
+        }
+    }
 
     init {
         var clipRect = Rectangle(root.width, root.height)
@@ -89,6 +103,12 @@ class GalleryImageLayout(val img: GalleryImage) : Fragment() {
         slideTransition.fromYProperty().bind(root.heightProperty())
         slideTransition.toYProperty().bind(root.heightProperty().subtract(overlayPane.heightProperty()).subtract(3))
 
+        fitToParentProperty.addListener({ obs, old, new ->
+            updateFitToParentProperty(new)
+        })
+        updateFitToParentProperty(isFitToParent)
+
+
         background {
             img_data = img.download_thumb()
         } ui {
@@ -97,11 +117,15 @@ class GalleryImageLayout(val img: GalleryImage) : Fragment() {
         }
 
         CURRENT_IMAGE.addListener({ obs ->
-            update_interface()
+            if (downloadableProperty.value) {
+                update_interface()
+            }
         })
 
         root.addEventHandler(MouseEvent.MOUSE_ENTERED_TARGET, {
-            CURRENT_IMAGE.set(this)
+            if (downloadableProperty.value) {
+                CURRENT_IMAGE.set(this)
+            }
         })
 
         listOf(iconRemove, iconDownload, iconLoading).forEach {
@@ -110,19 +134,21 @@ class GalleryImageLayout(val img: GalleryImage) : Fragment() {
         }
 
         overlayPane.onMouseClicked = EventHandler {
-            var dir_path = savePath()
-            if (it.button == MouseButton.PRIMARY) {
-                overlayPane.center = iconLoading
-                isDownloading = true
-                background {
-                    if (img.exists(dir_path)) {
-                        Files.delete(Paths.get(img.get_path(dir_path)))
-                    } else {
-                        img.save_to_file(dir_path)
+            if (downloadableProperty.value) {
+                var dir_path = savePath()
+                if (it.button == MouseButton.PRIMARY) {
+                    overlayPane.center = iconLoading
+                    isDownloading = true
+                    background {
+                        if (img.exists(dir_path)) {
+                            Files.delete(Paths.get(img.get_path(dir_path)))
+                        } else {
+                            img.save_to_file(dir_path)
+                        }
+                    } ui {
+                        isDownloading = false
+                        update_interface(true)
                     }
-                } ui {
-                    isDownloading = false
-                    update_interface(true)
                 }
             }
         }
