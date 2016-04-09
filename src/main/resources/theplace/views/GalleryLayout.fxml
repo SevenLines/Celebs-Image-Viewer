@@ -9,36 +9,40 @@
 <?import javafx.scene.layout.*?>
 
 
-<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" VBox.vgrow="ALWAYS">
+      <BorderPane fx:id="loadingOverlay" prefHeight="210.0" prefWidth="286.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <center>
+            <VBox alignment="CENTER" BorderPane.alignment="CENTER">
+               <children>
+                  <VBox prefHeight="49.0" prefWidth="286.0" />
+                  <ImageView pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                     <image>
+                        <Image url="@images/loading.gif" />
+                     </image>
+                  </ImageView>
+                  <Label text="Loading...">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+         </center>
+      </BorderPane>
+      <VBox fx:id="vbox" prefHeight="100.0" prefWidth="160.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Pagination fx:id="paginator" maxPageIndicatorCount="1000" prefHeight="67.0" prefWidth="286.0" style="-fx-page-information-visible: false;" stylesheets="@../../styles.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-            <Slider fx:id="sldPage" majorTickUnit="1.0" minorTickCount="0" prefHeight="34.0" prefWidth="286.0" showTickMarks="true" snapToTicks="true" AnchorPane.bottomAnchor="26.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-               <padding>
-                  <Insets bottom="6.0" left="6.0" right="6.0" />
-               </padding>
-            </Slider>
-            <BorderPane fx:id="paneLoading" prefHeight="210.0" prefWidth="286.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <center>
-                  <VBox alignment="CENTER" BorderPane.alignment="CENTER">
-                     <children>
-                        <VBox prefHeight="49.0" prefWidth="286.0" />
-                        <ImageView pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-                           <image>
-                              <Image url="@images/loading.gif" />
-                           </image>
-                        </ImageView>
-                        <Label text="Loading...">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Label>
-                     </children>
-                  </VBox>
-               </center>
-            </BorderPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <Pagination fx:id="paginator" prefHeight="67.0" prefWidth="286.0" style="-fx-page-information-visible: false;" stylesheets="@../../styles.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Slider fx:id="sldPage" majorTickUnit="1.0" minorTickCount="0" prefHeight="34.0" prefWidth="286.0" showTickMarks="true" snapToTicks="true" AnchorPane.bottomAnchor="26.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                     <padding>
+                        <Insets bottom="6.0" left="6.0" right="6.0" />
+                     </padding>
+                  </Slider>
+               </children>
+            </AnchorPane>
          </children>
-      </AnchorPane>
+      </VBox>
    </children>
-</VBox>
+</AnchorPane>

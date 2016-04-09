@@ -89,7 +89,7 @@ class MainLayout : View() {
 //            }
 //        }
 
-        galleriesList.getSelectionModel().selectedItemProperty().addListener({
+        galleriesList.selectionModel.selectedItemProperty().addListener({
             observableValue, old, newGallery ->
             if (newGallery != null) {
                 if (tabMap.containsKey(newGallery)) {

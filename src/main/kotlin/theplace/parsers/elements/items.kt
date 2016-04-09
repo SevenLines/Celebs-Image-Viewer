@@ -32,7 +32,8 @@ open class Gallery(var title: String = "",
 class SubGallery(var title: String = "",
                  var url: String = "",
                  var id: Int = -1,
-                 var gallery: Gallery? = null) {
+                 var gallery: Gallery? = null,
+                 @Transient var parser: BaseParser? = null) {
     protected var _albums: List<GalleryAlbum>? = null
     val albums: List<GalleryAlbum>
         get() {
@@ -53,7 +54,8 @@ class GalleryAlbum(var url: String = "",
                    var title: String = "",
                    var id: Int = -1,
                    var thumb: GalleryImage? = null,
-                   var subgallery: SubGallery? = null) {
+                   var subgallery: SubGallery? = null,
+                   @Transient var parser: BaseParser? = null) {
     override fun toString(): String {
         return "GalleryAlbum: ${subgallery?.title} [url: $url]"
     }
@@ -66,7 +68,7 @@ class GalleryAlbum(var url: String = "",
         }
 }
 
-class GalleryAlbumPage(var url: String, var album: GalleryAlbum? = null) {
+class GalleryAlbumPage(var url: String, var album: GalleryAlbum? = null, @Transient var parser: BaseParser? = null) {
     protected var _images: List<GalleryImage>? = null
     val images: List<GalleryImage>
         get() {
@@ -79,7 +81,8 @@ class GalleryImage(var title: String = "",
                    val url: String,
                    val url_thumb: String,
                    var page: GalleryAlbumPage? = null,
-                   var album: GalleryAlbum? = null) {
+                   var album: GalleryAlbum? = null,
+                   @Transient var parser: BaseParser? = null) {
 
     companion object {
         @JvmStatic val CACHE_DIR: String = "./cache"
