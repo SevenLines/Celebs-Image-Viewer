@@ -2,6 +2,8 @@ package theplace.parsers.elements
 
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.FilenameUtils
+import theplace.imageloaders.ImageLoaderSelector
+import theplace.imageloaders.LoadedImage
 import theplace.parsers.BaseParser
 import java.io.File
 import java.io.FileInputStream
@@ -85,59 +87,78 @@ class GalleryImage(var title: String = "",
                    @Transient var parser: BaseParser? = null) {
 
     companion object {
-        @JvmStatic val CACHE_DIR: String = "./cache"
+        @JvmStatic var CACHE_DIR: String = "cache"
+        @JvmStatic val THUMBS_PREFIX: String = "thumbs"
     }
 
     init {
         title = FilenameUtils.getName(url)
     }
 
-    fun get_path(directory_path: String, filename: String = title) =
-            Paths.get(directory_path,
-                    page?.album?.subgallery?.gallery?.title ?: "",
-                    page?.album?.subgallery?.gallery?.parser?.title ?: "",
-                    page?.album?.subgallery?.title ?: "",
-                    page?.album?.title ?: "",
-                    filename).toString()
-
-
-    fun downloadImage(url: String): InputStream? {
-        var file_name = Paths.get(url).fileName.toString()
-        var path = get_path(CACHE_DIR, file_name)
-        var stream_data: InputStream?
-        if (Files.exists(Paths.get(path))) {
-            return FileInputStream(path)
+    protected fun _download(isThumb: Boolean = false): LoadedImage? {
+        var url = if (isThumb) this.url_thumb else this.url
+        var prefix = if (isThumb) THUMBS_PREFIX else ""
+        var path = exists(Paths.get(CACHE_DIR), prefix)
+        if (path != null) {
+            return LoadedImage(url = path.toString(), body = FileInputStream(path.toFile()))
         } else {
-            var parser = page?.album?.subgallery?.gallery?.parser ?: album?.subgallery?.gallery?.parser
-            stream_data = parser?.downloadImage(url)
-            if (stream_data != null) {
-                FileUtils.copyInputStreamToFile(stream_data, File(path))
-                stream_data.reset()
+            var loadedImage = ImageLoaderSelector.download(url)
+            if (loadedImage?.body != null) {
+                var newPath = getPath(CACHE_DIR, prefix, FilenameUtils.getExtension(loadedImage?.url))
+                FileUtils.copyInputStreamToFile(loadedImage?.body, newPath.toFile())
+                loadedImage?.body?.reset()
             }
-            return stream_data
+            return loadedImage
         }
     }
 
-    fun exists(directory_path: String): Boolean = Files.exists(Paths.get(get_path(directory_path)))
-    fun download(): InputStream? = downloadImage(url)
-    fun download_thumb(): InputStream? = downloadImage(url_thumb)
+    protected fun _saveToPath(path: Path, isThumb: Boolean = false): Path {
+        var prefix = if (isThumb) THUMBS_PREFIX else ""
+        var loadedImage = if (isThumb) downloadThumb() else download()
+        var newPath = getPath(
+                path.toString(), prefix = prefix, extension = FilenameUtils.getExtension(loadedImage?.url)
+        )
+        FileUtils.copyInputStreamToFile(loadedImage?.body, newPath.toFile())
+        return newPath
+    }
 
-    protected fun save_to_path(url: String? = null, directory_path: String) {
-        var filename = if (url != null) Paths.get(url).fileName.toString() else title
-        var pth = get_path(directory_path, filename)
-        var data = download()
-        if (data != null) {
-            var file = File(pth);
-            file.parentFile.mkdirs();
-            FileUtils.copyInputStreamToFile(data, file)
+    fun exists(directory_path: Path, prefix: String = ""): Path? {
+        return listOf("", "jpg", "jpeg", "png", "tiff", "tif", "gif").map {
+            getPath(directory_path.toString(), prefix, it)
+        }.firstOrNull {
+            it.toFile().exists()
         }
     }
 
-    fun save_to_file(directory_path: String) {
-        save_to_path(directory_path = directory_path)
+    fun thumbExists(directory_path: Path): Path? {
+        return exists(directory_path, THUMBS_PREFIX)
     }
 
-    fun save_thumb_to_file(directory_path: String) {
-        save_to_path(url_thumb, directory_path)
+    fun getPath(directory_path: String, prefix: String = "", extension: String = ""): Path {
+        var ext = FilenameUtils.getExtension(title)
+        if (ext.isNullOrEmpty())
+            ext = extension
+        return Paths.get(directory_path, prefix,
+                page?.album?.subgallery?.gallery?.title ?: "",
+                page?.album?.subgallery?.gallery?.parser?.title ?: "",
+                page?.album?.subgallery?.title ?: "",
+                page?.album?.title ?: "",
+                "${FilenameUtils.getBaseName(title)}.$ext")
+    }
+
+    fun downloadThumb(): LoadedImage? {
+        return _download(true)
+    }
+
+    fun download(): LoadedImage? {
+        return _download()
+    }
+
+    fun saveThumbToPath(path: Path): Path {
+        return _saveToPath(path, true)
+    }
+
+    fun saveToPath(path: Path): Path {
+        return _saveToPath(path)
     }
 }

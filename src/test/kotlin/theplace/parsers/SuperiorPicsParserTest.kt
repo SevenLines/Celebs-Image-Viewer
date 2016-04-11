@@ -4,12 +4,13 @@ import org.testng.Assert
 import org.testng.annotations.BeforeSuite
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
+import kotlin.properties.Delegates
 
 /**
  * Created by mk on 08.04.16.
  */
 class SuperiorPicsParserTest : Assert() {
-    var parser: SuperiorPicsParser = SuperiorPicsParser()
+    var parser: SuperiorPicsParser by Delegates.notNull()
 
     @BeforeSuite fun setUp() {
         parser = SuperiorPicsParser()

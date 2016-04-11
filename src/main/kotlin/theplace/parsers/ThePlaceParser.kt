@@ -12,7 +12,7 @@ class ThePlaceParser() : BaseParser("http://www.theplace.ru", "theplace") {
     override var isAlwaysOneSubGallery = true
 
     override fun getAlbumPages(album: GalleryAlbum): List<GalleryAlbumPage> {
-        val response = Unirest.get("${url}${album.url}").asString()
+        val response = Unirest.get(album.url).asString()
         val doc = Jsoup.parse(response.body)
         val links = doc.select(".listalka.ltop a")
         val items = links.map { it.text() }.filter { "\\d+".toRegex().matches(it) }.map { it.toInt() }
@@ -22,7 +22,7 @@ class ThePlaceParser() : BaseParser("http://www.theplace.ru", "theplace") {
         }
 
         return IntRange(1, count ?: 1).map {
-            var href = "/photos/gallery.php?id=${album.id}&page=$it"
+            var href = "$url/photos/gallery.php?id=${album.id}&page=$it"
             GalleryAlbumPage(url = href, album = album)
         }
     }
@@ -30,26 +30,26 @@ class ThePlaceParser() : BaseParser("http://www.theplace.ru", "theplace") {
     private fun galleryItemForLink(link: Element): Gallery {
         val href = link.attr("href")
         val id = """mid(\d+).html""".toRegex().find(href)?.groups!![1]?.value
-        return Gallery(title = link.text(), url = "/photos/$href", parser = this, id = id!!.toInt())
+        return Gallery(title = link.text(), url = "$url/photos/$href", parser = this, id = id!!.toInt())
     }
 
     private fun galleryImageForLink(el: Element, albumPage: GalleryAlbumPage): GalleryImage {
         var thumb = el.attr("src")
         var url = """^(.*?)(_s)(\.\w+)$""".toRegex().replace(thumb, """$1$3""")
         return GalleryImage(
-                url_thumb = thumb,
-                url = url,
+                url_thumb = "${this.url}$thumb",
+                url = "${this.url}$url",
                 page = albumPage,
                 album = albumPage.album
         )
     }
 
     override fun downloadImage(image_url: String): InputStream? {
-        return Unirest.get("${url}${image_url}").header("referer", "$url").asBinary().body
+        return Unirest.get(image_url).header("referer", "$url").asBinary().body
     }
 
     override fun getImages(albumPage: GalleryAlbumPage): List<GalleryImage> {
-        var response = Unirest.get("${url}${albumPage.url}").asString()
+        var response = Unirest.get(albumPage.url).asString()
         var doc = Jsoup.parse(response.body)
         var links = doc.select(".gallery-pics-list .pic_box a img")
         return links.map { galleryImageForLink(it, albumPage) }

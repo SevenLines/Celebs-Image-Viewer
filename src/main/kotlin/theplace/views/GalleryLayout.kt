@@ -131,9 +131,10 @@ class GalleryLayout(val gallery: Gallery) : Fragment() {
 
                             var stream: InputStream? = null
                             background {
-                                stream = it.download_thumb()
+                                stream = it.downloadThumb()?.body
                             } ui {
-                                imageView.image = Image(stream)
+                                if (stream!=null)
+                                    imageView.image = Image(stream)
                             }
                             borderPane.center = imageView
                             hbox.add(borderPane)

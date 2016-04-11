@@ -3,12 +3,13 @@ package theplace.parsers
 import org.testng.Assert
 import org.testng.annotations.BeforeSuite
 import org.testng.annotations.Test
+import kotlin.properties.Delegates
 
 /**
  * Created by mk on 09.04.16.
  */
 class ThePlaceParserTest: Assert() {
-    var parser = ThePlaceParser()
+    var parser: ThePlaceParser by Delegates.notNull()
 
     @BeforeSuite fun setup() {
         parser = ThePlaceParser()

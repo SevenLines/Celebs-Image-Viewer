@@ -56,14 +56,14 @@ class GalleryImageLayout(val img: GalleryImage,
 
     fun update_interface(check_exists: Boolean = false) {
         if (check_exists) {
-            var exists = img.exists(savePath())
-            if (exists) {
+            var path = img.exists(Paths.get(savePath()))
+            if (path != null) {
                 root.styleClass.clear()
                 root.styleClass.add("exists")
             } else {
                 root.styleClass.clear()
             }
-            overlayPane.center = if (exists) iconRemove else iconDownload
+            overlayPane.center = if (path!=null) iconRemove else iconDownload
         }
 
         if (!isDownloading) {
@@ -110,7 +110,7 @@ class GalleryImageLayout(val img: GalleryImage,
 
 
         background {
-            img_data = img.download_thumb()
+            img_data = img.downloadThumb()?.body
         } ui {
             image.image = Image(img_data)
             overlayPane.layoutX = root.height
@@ -140,10 +140,11 @@ class GalleryImageLayout(val img: GalleryImage,
                     overlayPane.center = iconLoading
                     isDownloading = true
                     background {
-                        if (img.exists(dir_path)) {
-                            Files.delete(Paths.get(img.get_path(dir_path)))
+                        var path = img.exists(Paths.get(dir_path))
+                        if (path!=null) {
+                            img.getPath(dir_path).toFile().delete()
                         } else {
-                            img.save_to_file(dir_path)
+                            img.saveToPath(Paths.get(dir_path))
                         }
                     } ui {
                         isDownloading = false

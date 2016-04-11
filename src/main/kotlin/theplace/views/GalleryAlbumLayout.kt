@@ -15,9 +15,11 @@ import javafx.scene.layout.BorderPane
 import javafx.scene.layout.FlowPane
 import javafx.scene.shape.Rectangle
 import javafx.util.Duration
+import theplace.imageloaders.LoadedImage
 import theplace.parsers.elements.GalleryAlbumPage
 import tornadofx.Fragment
 import java.io.InputStream
+import kotlin.properties.Delegates
 
 /**
  * Created by mk on 03.04.16.
@@ -92,18 +94,18 @@ class GalleryAlbumLayout(albumPage: GalleryAlbumPage) : Fragment() {
                         imageContainerShowAnimation.rate = 1.0
                         imageContainerShowAnimation.play()
 
-                        var image_data: InputStream? = null
+                        var loadedImage: LoadedImage? = null
                         setFit(true)
 
                         background {
-                            image_data = galleryImageLayout.img.download()
+                            loadedImage = galleryImageLayout.img.download()
                         } ui {
-                            if (image_data != null) {
+                            if (loadedImage != null) {
                                 setFit(false)
-                                if (image_data?.markSupported() ?: false) {
-                                    image_data?.reset()
+                                if (loadedImage?.body?.markSupported() ?: false) {
+                                    loadedImage?.body?.reset()
                                 }
-                                imageContainer.image = Image(image_data)
+                                imageContainer.image = Image(loadedImage?.body)
                             }
                         }
                     }

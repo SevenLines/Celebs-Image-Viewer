@@ -38,6 +38,7 @@ dependencies {
     compile 'no.tornado:tornadofx:1.4.1'
     compile 'commons-io:commons-io:2.4'
     compile 'com.google.code.gson:gson:2.6.2'
+    compile 'org.reflections:reflections:0.9.10'
     testCompile 'org.testng:testng:6.9.10'
 }
 
