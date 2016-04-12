@@ -112,8 +112,12 @@ class GalleryImageLayout(val img: GalleryImage,
         background {
             img_data = img.downloadThumb()?.body
         } ui {
-            image.image = Image(img_data)
-            overlayPane.layoutX = root.height
+            if (img_data!=null) {
+                image.image = Image(img_data)
+                overlayPane.layoutX = root.height
+            } else {
+                image.image = null
+            }
         }
 
         CURRENT_IMAGE.addListener({ obs ->

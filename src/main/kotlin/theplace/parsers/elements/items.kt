@@ -1,5 +1,6 @@
 package theplace.parsers.elements
 
+import com.mashape.unirest.http.Unirest
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.FilenameUtils
 import theplace.imageloaders.ImageLoaderSelector
@@ -102,7 +103,12 @@ class GalleryImage(var title: String = "",
         if (path != null) {
             return LoadedImage(url = path.toString(), body = FileInputStream(path.toFile()))
         } else {
-            var loadedImage = ImageLoaderSelector.download(url)
+            var loadedImage: LoadedImage?
+            if (isThumb) {
+                loadedImage = LoadedImage(url, Unirest.get("$url").header("referer", "$url").asBinary().body)
+            } else {
+                loadedImage = ImageLoaderSelector.download(url)
+            }
             if (loadedImage?.body != null) {
                 var newPath = getPath(CACHE_DIR, prefix, FilenameUtils.getExtension(loadedImage?.url))
                 FileUtils.copyInputStreamToFile(loadedImage?.body, newPath.toFile())

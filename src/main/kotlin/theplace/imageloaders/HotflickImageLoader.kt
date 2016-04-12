@@ -7,7 +7,7 @@ import java.io.InputStream
  * Created by mk on 10.04.16.
  */
 class HotflickImageLoader : BaseImageLoaderInterface(title = "hotflick", url = "http://www.hotflick.net") {
-    override fun getImageUrl(doc: Element): String {
+    override fun getImageUrl(doc: Element, url: String): String {
         var img = doc.select("#img").first()
         return img.attr("src")
     }

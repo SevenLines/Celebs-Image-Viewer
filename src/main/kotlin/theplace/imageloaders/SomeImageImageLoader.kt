@@ -13,7 +13,7 @@ class SomeImageImageLoader : BaseImageLoaderInterface("someimage.com", "https://
         return url.startsWith("https://someimage.com")
     }
 
-    override fun getImageUrl(doc: Element): String {
+    override fun getImageUrl(doc: Element, url: String): String {
         var image = doc.select("#viewimage").first()
         return image.attr("src")
     }

@@ -100,12 +100,14 @@ class GalleryAlbumLayout(albumPage: GalleryAlbumPage) : Fragment() {
                         background {
                             loadedImage = galleryImageLayout.img.download()
                         } ui {
-                            if (loadedImage != null) {
+                            if (loadedImage != null && loadedImage?.body!= null) {
                                 setFit(false)
                                 if (loadedImage?.body?.markSupported() ?: false) {
                                     loadedImage?.body?.reset()
                                 }
                                 imageContainer.image = Image(loadedImage?.body)
+                            } else {
+                                imageContainer.image = null
                             }
                         }
                     }
