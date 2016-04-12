@@ -140,7 +140,7 @@ class GalleryImage(var title: String = "",
     }
 
     fun safeName(title: String): String {
-        var result = title.replace("""\.+$""".toRegex(), "").trim()
+        var result = title.replace("""\.+$|"""".toRegex(), "").trim()
         return result
     }
 

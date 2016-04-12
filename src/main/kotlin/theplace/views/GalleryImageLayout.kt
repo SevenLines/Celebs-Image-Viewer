@@ -146,7 +146,7 @@ class GalleryImageLayout(val img: GalleryImage,
                     background {
                         var path = img.exists(Paths.get(dir_path))
                         if (path!=null) {
-                            img.getPath(dir_path).toFile().delete()
+                            path.toFile().delete()
                         } else {
                             img.saveToPath(Paths.get(dir_path))
                         }
