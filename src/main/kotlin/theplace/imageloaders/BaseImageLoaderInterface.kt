@@ -4,6 +4,7 @@ import com.mashape.unirest.http.Unirest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import java.io.InputStream
+import java.net.URL
 
 /**
  * Created by mk on 10.04.16.
@@ -25,4 +26,10 @@ abstract class BaseImageLoaderInterface(var title: String, var url: String) {
         return LoadedImage("", null)
     }
     abstract fun checkUrl(url: String): Boolean
+
+    open fun getTitle(url: String): String {
+        var file = URL(url).file
+        file = file.split("/").last()
+        return file
+    }
 }

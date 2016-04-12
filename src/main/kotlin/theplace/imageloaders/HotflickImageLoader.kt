@@ -2,6 +2,7 @@ package theplace.imageloaders
 
 import org.jsoup.nodes.Element
 import java.io.InputStream
+import java.net.URL
 
 /**
  * Created by mk on 10.04.16.
@@ -16,5 +17,8 @@ class HotflickImageLoader : BaseImageLoaderInterface(title = "hotflick", url = "
         return url.startsWith(this.url)
     }
 
-
+    override fun getTitle(url: String): String {
+        var query = URL(url).query
+        return query?.split("=")?.last()?.split('.', limit = 2)?.last() ?: return super.getTitle(url)
+    }
 }

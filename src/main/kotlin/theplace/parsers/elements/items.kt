@@ -93,7 +93,7 @@ class GalleryImage(var title: String = "",
     }
 
     init {
-        title = FilenameUtils.getName(url)
+        title = ImageLoaderSelector.getTitle(url)
     }
 
     protected fun _download(isThumb: Boolean = false): LoadedImage? {

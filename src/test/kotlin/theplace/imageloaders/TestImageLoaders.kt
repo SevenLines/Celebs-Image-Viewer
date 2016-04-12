@@ -14,17 +14,22 @@ import javax.imageio.ImageIO
 class TestImageLoaders : Assert() {
 
     @DataProvider fun data() = arrayOf(
-            arrayOf("https://someimage.com/gxAPNeU", SomeImageImageLoader()),
-            arrayOf("http://www.imagebam.com/image/6b4a9e472012133", ImagebamImageLoader()),
-            arrayOf("http://img125.imagevenue.com/img.php?image=15029_septimiu29_AshleyGreene_SeventeenUSA_Dec2012_Jan20131_122_594lo.jpg", ImagenenueImageLoader()),
-            arrayOf("http://www.hotflick.net/f/v/?q=2782436.th_30605_ab13485dfbad8970c_800wi_122_561lo.jpg", HotflickImageLoader())
+            arrayOf("https://someimage.com/gxAPNeU", SomeImageImageLoader(), "gxAPNeU"),
+            arrayOf("http://www.imagebam.com/image/6b4a9e472012133", ImagebamImageLoader(), "6b4a9e472012133"),
+            arrayOf(
+                    "http://img125.imagevenue.com/img.php?image=15029_septimiu29_AshleyGreene_SeventeenUSA_Dec2012_Jan20131_122_594lo.jpg",
+                    ImagevenueImageLoader(),
+                    "15029_septimiu29_AshleyGreene_SeventeenUSA_Dec2012_Jan20131_122_594lo.jpg"),
+            arrayOf("http://www.hotflick.net/f/v/?q=2782436.th_30605_ab13485dfbad8970c_800wi_122_561lo.jpg", HotflickImageLoader(),
+                    "th_30605_ab13485dfbad8970c_800wi_122_561lo.jpg")
     )
 
     @Test(dataProvider = "data")
-    fun should_load_successfully(url: String, loader: BaseImageLoaderInterface) {
+    fun should_load_successfully(url: String, loader: BaseImageLoaderInterface, title: String) {
         assertTrue(loader.checkUrl(url))
         var loaderReal = ImageLoaderSelector.getLoader(url)
         assertEquals((loaderReal as Any).javaClass, loader.javaClass)
+        assertEquals(loaderReal.getTitle(url), title)
 
         var inputStream = ImageLoaderSelector.download(url)
         var img = ImageIO.read(inputStream?.body)
