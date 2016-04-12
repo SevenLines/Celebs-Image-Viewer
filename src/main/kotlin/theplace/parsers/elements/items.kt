@@ -6,11 +6,10 @@ import org.apache.commons.io.FilenameUtils
 import theplace.imageloaders.ImageLoaderSelector
 import theplace.imageloaders.LoadedImage
 import theplace.parsers.BaseParser
-import java.io.File
 import java.io.FileInputStream
-import java.io.InputStream
 import java.io.Serializable
-import java.nio.file.*
+import java.nio.file.Path
+import java.nio.file.Paths
 
 /**
  * Created by mk on 03.04.16.
@@ -140,15 +139,20 @@ class GalleryImage(var title: String = "",
         return exists(directory_path, THUMBS_PREFIX)
     }
 
+    fun safeName(title: String): String {
+        var result = title.replace("""\.+$""".toRegex(), "").trim()
+        return result
+    }
+
     fun getPath(directory_path: String, prefix: String = "", extension: String = ""): Path {
         var ext = FilenameUtils.getExtension(title)
         if (ext.isNullOrEmpty())
             ext = extension
         return Paths.get(directory_path, prefix,
-                page?.album?.subgallery?.gallery?.title ?: "",
-                page?.album?.subgallery?.gallery?.parser?.title ?: "",
-                page?.album?.subgallery?.title ?: "",
-                page?.album?.title ?: "",
+                safeName(page?.album?.subgallery?.gallery?.title ?: ""),
+                safeName(page?.album?.subgallery?.gallery?.parser?.title ?: ""),
+                safeName(page?.album?.subgallery?.title ?: ""),
+                safeName(page?.album?.title ?: ""),
                 "${FilenameUtils.getBaseName(title)}.$ext")
     }
 

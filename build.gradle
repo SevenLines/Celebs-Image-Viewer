@@ -9,7 +9,7 @@ def getVersionName = { ->
         standardOutput = stdout
     }
     version = stdout.toString().trim().split("-")
-    return version[0..-2].join(".")
+    return version.length >= 2 ? version[0..-2].join(".") : version[0]
 }
 
 buildscript {
