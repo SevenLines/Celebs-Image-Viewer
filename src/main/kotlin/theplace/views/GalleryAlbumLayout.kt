@@ -106,6 +106,7 @@ class GalleryAlbumLayout(albumPage: GalleryAlbumPage) : Fragment() {
                                     loadedImage?.body?.reset()
                                 }
                                 imageContainer.image = Image(loadedImage?.body)
+                                imageContainer.viewport = imageContainer.viewport
                             } else {
                                 imageContainer.image = null
                             }
