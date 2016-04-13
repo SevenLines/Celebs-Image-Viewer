@@ -19,7 +19,7 @@ abstract class BaseParser(var url: String = "", var title: String = "") {
     open var isAlwaysOnePage = false
 
     companion object {
-        @JvmStatic val PARSERS_DIR = "./parsers"
+        @JvmStatic val PARSERS_DIR = Paths.get("./parsers").toAbsolutePath().toString()
     }
 
     init {

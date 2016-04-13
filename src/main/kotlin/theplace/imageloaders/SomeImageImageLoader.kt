@@ -10,7 +10,7 @@ import java.io.InputStream
  */
 class SomeImageImageLoader : BaseImageLoaderInterface("someimage.com", "https://someimage.com/") {
     override fun checkUrl(url: String): Boolean {
-        return url.startsWith("https://someimage.com")
+        return """^https?\://someimage\.com""".toRegex().containsMatchIn(url)
     }
 
     override fun getImageUrl(doc: Element, url: String): String {

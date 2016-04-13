@@ -21,7 +21,10 @@ class TestImageLoaders : Assert() {
                     "15029_septimiu29_AshleyGreene_SeventeenUSA_Dec2012_Jan20131_122_594lo.jpg"),
             arrayOf("http://www.hotflick.net/f/v/?q=2782436.th_30605_ab13485dfbad8970c_800wi_122_561lo.jpg", HotflickImageLoader(),
                     "th_30605_ab13485dfbad8970c_800wi_122_561lo.jpg"),
-            arrayOf("http://imgbox.com/L0oiABWW", ImageBoxImageLoader(), "L0oiABWW")
+            arrayOf("http://www.hotflick.net/u/v/?q=4695598.alison-sudol-ladygunn-magazine-3.jpg", HotflickImageLoader(),
+                    "alison-sudol-ladygunn-magazine-3.jpg"),
+            arrayOf("http://imgbox.com/L0oiABWW", ImageBoxImageLoader(), "L0oiABWW"),
+            arrayOf("http://someimage.com/0lgF2xr", SomeImageImageLoader(), "0lgF2xr")
     )
 
     @Test(dataProvider = "data")

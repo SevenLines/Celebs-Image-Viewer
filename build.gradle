@@ -48,7 +48,8 @@ jar {
                    'Application-Name': 'Celebs-Image-Viewer',
                    'Implementation-Version': getVersionName()
     }
-    version getVersionName()
+    version ""
+    destinationDir file("$projectDir")
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
