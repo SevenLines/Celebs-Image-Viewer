@@ -147,7 +147,7 @@ class GalleryLayout(val gallery: Gallery) : Fragment() {
                     }
                     return@Callback scrollPane
                 }
-                pagSubGalleries.currentPageIndex = 1
+                pagSubGalleries.currentPageIndex = 0
             }
         }
     }

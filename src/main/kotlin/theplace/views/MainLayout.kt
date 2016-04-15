@@ -103,7 +103,6 @@ class MainLayout : View() {
                     tabPane.selectionModel.select(0)
 
                     tab.onClosed = EventHandler {
-                        System.out.println("closed")
                         tabMap.remove(newGallery)
                     }
                     tab.userData = newGallery
